@@ -1,0 +1,19 @@
+{
+  "startPoint": "Port1",
+  "endPoint": "Port3",
+  "departureTime": "2024-01-01T12:00:00",
+  "routes": [
+    { "from": "Port1", "to": "Port2", "distance": 200, "baseTime": 20 },
+    { "from": "Port2", "to": "Port3", "distance": 200, "baseTime": 20 },
+    { "from": "Port1", "to": "Port4", "distance": 1000, "baseTime": 100 },
+    { "from": "Port4", "to": "Port3", "distance": 1000, "baseTime": 100 }
+  ],
+  "storms": [
+    {
+      "routeId": "Port1-Port2",
+      "startTime": "2024-01-01T11:00:00",
+      "endTime": "2024-01-01T14:00:00",
+      "severity": "high"
+    }
+  ]
+}

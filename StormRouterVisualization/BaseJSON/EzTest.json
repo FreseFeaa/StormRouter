@@ -1,0 +1,19 @@
+{
+  "startPoint": "A",
+  "endPoint": "C",
+  "departureTime": "2024-01-01T08:00:00",
+  "routes": [
+    { "from": "A", "to": "B", "distance": 100, "baseTime": 10 },
+    { "from": "B", "to": "C", "distance": 100, "baseTime": 10 },
+    { "from": "A", "to": "D", "distance": 300, "baseTime": 30 },
+    { "from": "D", "to": "C", "distance": 50, "baseTime": 5 }
+  ],
+  "storms": [
+    {
+      "routeId": "A-B",
+      "startTime": "2024-01-01T07:00:00",
+      "endTime": "2024-01-01T20:00:00",
+      "severity": "high"
+    }
+  ]
+}

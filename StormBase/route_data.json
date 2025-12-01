@@ -1,0 +1,1894 @@
+
+{
+  "startPoint": "Node_0",
+  "endPoint": "Node_99",
+  "departureTime": "2024-01-01T08:00:00",
+  "routes": [
+    {
+      "from": "Node_0",
+      "to": "Node_4",
+      "distance": 411,
+      "baseTime": 41
+    },
+    {
+      "from": "Node_0",
+      "to": "Node_3",
+      "distance": 77,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_0",
+      "to": "Node_1",
+      "distance": 252,
+      "baseTime": 25
+    },
+    {
+      "from": "Node_1",
+      "to": "Node_2",
+      "distance": 382,
+      "baseTime": 38
+    },
+    {
+      "from": "Node_1",
+      "to": "Node_3",
+      "distance": 457,
+      "baseTime": 45
+    },
+    {
+      "from": "Node_1",
+      "to": "Node_4",
+      "distance": 155,
+      "baseTime": 15
+    },
+    {
+      "from": "Node_2",
+      "to": "Node_5",
+      "distance": 305,
+      "baseTime": 30
+    },
+    {
+      "from": "Node_2",
+      "to": "Node_4",
+      "distance": 266,
+      "baseTime": 26
+    },
+    {
+      "from": "Node_2",
+      "to": "Node_6",
+      "distance": 250,
+      "baseTime": 25
+    },
+    {
+      "from": "Node_3",
+      "to": "Node_4",
+      "distance": 162,
+      "baseTime": 16
+    },
+    {
+      "from": "Node_3",
+      "to": "Node_5",
+      "distance": 307,
+      "baseTime": 30
+    },
+    {
+      "from": "Node_3",
+      "to": "Node_7",
+      "distance": 406,
+      "baseTime": 40
+    },
+    {
+      "from": "Node_4",
+      "to": "Node_5",
+      "distance": 323,
+      "baseTime": 32
+    },
+    {
+      "from": "Node_4",
+      "to": "Node_8",
+      "distance": 69,
+      "baseTime": 6
+    },
+    {
+      "from": "Node_4",
+      "to": "Node_7",
+      "distance": 178,
+      "baseTime": 17
+    },
+    {
+      "from": "Node_5",
+      "to": "Node_7",
+      "distance": 176,
+      "baseTime": 17
+    },
+    {
+      "from": "Node_5",
+      "to": "Node_8",
+      "distance": 231,
+      "baseTime": 23
+    },
+    {
+      "from": "Node_5",
+      "to": "Node_6",
+      "distance": 421,
+      "baseTime": 42
+    },
+    {
+      "from": "Node_6",
+      "to": "Node_7",
+      "distance": 500,
+      "baseTime": 50
+    },
+    {
+      "from": "Node_6",
+      "to": "Node_10",
+      "distance": 139,
+      "baseTime": 13
+    },
+    {
+      "from": "Node_6",
+      "to": "Node_9",
+      "distance": 291,
+      "baseTime": 29
+    },
+    {
+      "from": "Node_7",
+      "to": "Node_11",
+      "distance": 59,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_7",
+      "to": "Node_8",
+      "distance": 286,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_7",
+      "to": "Node_10",
+      "distance": 51,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_8",
+      "to": "Node_10",
+      "distance": 234,
+      "baseTime": 23
+    },
+    {
+      "from": "Node_8",
+      "to": "Node_12",
+      "distance": 218,
+      "baseTime": 21
+    },
+    {
+      "from": "Node_8",
+      "to": "Node_9",
+      "distance": 470,
+      "baseTime": 47
+    },
+    {
+      "from": "Node_9",
+      "to": "Node_11",
+      "distance": 63,
+      "baseTime": 6
+    },
+    {
+      "from": "Node_9",
+      "to": "Node_13",
+      "distance": 312,
+      "baseTime": 31
+    },
+    {
+      "from": "Node_9",
+      "to": "Node_10",
+      "distance": 283,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_10",
+      "to": "Node_13",
+      "distance": 72,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_10",
+      "to": "Node_12",
+      "distance": 289,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_10",
+      "to": "Node_14",
+      "distance": 81,
+      "baseTime": 8
+    },
+    {
+      "from": "Node_11",
+      "to": "Node_14",
+      "distance": 154,
+      "baseTime": 15
+    },
+    {
+      "from": "Node_11",
+      "to": "Node_15",
+      "distance": 68,
+      "baseTime": 6
+    },
+    {
+      "from": "Node_11",
+      "to": "Node_13",
+      "distance": 344,
+      "baseTime": 34
+    },
+    {
+      "from": "Node_12",
+      "to": "Node_13",
+      "distance": 389,
+      "baseTime": 38
+    },
+    {
+      "from": "Node_12",
+      "to": "Node_16",
+      "distance": 195,
+      "baseTime": 19
+    },
+    {
+      "from": "Node_12",
+      "to": "Node_14",
+      "distance": 271,
+      "baseTime": 27
+    },
+    {
+      "from": "Node_13",
+      "to": "Node_15",
+      "distance": 329,
+      "baseTime": 32
+    },
+    {
+      "from": "Node_13",
+      "to": "Node_14",
+      "distance": 425,
+      "baseTime": 42
+    },
+    {
+      "from": "Node_13",
+      "to": "Node_17",
+      "distance": 85,
+      "baseTime": 8
+    },
+    {
+      "from": "Node_14",
+      "to": "Node_15",
+      "distance": 261,
+      "baseTime": 26
+    },
+    {
+      "from": "Node_14",
+      "to": "Node_16",
+      "distance": 453,
+      "baseTime": 45
+    },
+    {
+      "from": "Node_14",
+      "to": "Node_17",
+      "distance": 88,
+      "baseTime": 8
+    },
+    {
+      "from": "Node_15",
+      "to": "Node_19",
+      "distance": 498,
+      "baseTime": 49
+    },
+    {
+      "from": "Node_15",
+      "to": "Node_16",
+      "distance": 176,
+      "baseTime": 17
+    },
+    {
+      "from": "Node_15",
+      "to": "Node_18",
+      "distance": 149,
+      "baseTime": 14
+    },
+    {
+      "from": "Node_16",
+      "to": "Node_17",
+      "distance": 159,
+      "baseTime": 15
+    },
+    {
+      "from": "Node_16",
+      "to": "Node_19",
+      "distance": 485,
+      "baseTime": 48
+    },
+    {
+      "from": "Node_16",
+      "to": "Node_18",
+      "distance": 483,
+      "baseTime": 48
+    },
+    {
+      "from": "Node_17",
+      "to": "Node_21",
+      "distance": 434,
+      "baseTime": 43
+    },
+    {
+      "from": "Node_17",
+      "to": "Node_19",
+      "distance": 368,
+      "baseTime": 36
+    },
+    {
+      "from": "Node_17",
+      "to": "Node_18",
+      "distance": 98,
+      "baseTime": 9
+    },
+    {
+      "from": "Node_18",
+      "to": "Node_20",
+      "distance": 94,
+      "baseTime": 9
+    },
+    {
+      "from": "Node_18",
+      "to": "Node_21",
+      "distance": 71,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_18",
+      "to": "Node_22",
+      "distance": 278,
+      "baseTime": 27
+    },
+    {
+      "from": "Node_19",
+      "to": "Node_21",
+      "distance": 208,
+      "baseTime": 20
+    },
+    {
+      "from": "Node_19",
+      "to": "Node_22",
+      "distance": 275,
+      "baseTime": 27
+    },
+    {
+      "from": "Node_19",
+      "to": "Node_20",
+      "distance": 286,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_20",
+      "to": "Node_21",
+      "distance": 276,
+      "baseTime": 27
+    },
+    {
+      "from": "Node_20",
+      "to": "Node_22",
+      "distance": 403,
+      "baseTime": 40
+    },
+    {
+      "from": "Node_20",
+      "to": "Node_24",
+      "distance": 465,
+      "baseTime": 46
+    },
+    {
+      "from": "Node_21",
+      "to": "Node_23",
+      "distance": 145,
+      "baseTime": 14
+    },
+    {
+      "from": "Node_21",
+      "to": "Node_24",
+      "distance": 85,
+      "baseTime": 8
+    },
+    {
+      "from": "Node_21",
+      "to": "Node_25",
+      "distance": 281,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_22",
+      "to": "Node_23",
+      "distance": 261,
+      "baseTime": 26
+    },
+    {
+      "from": "Node_22",
+      "to": "Node_25",
+      "distance": 53,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_22",
+      "to": "Node_26",
+      "distance": 380,
+      "baseTime": 38
+    },
+    {
+      "from": "Node_23",
+      "to": "Node_26",
+      "distance": 310,
+      "baseTime": 31
+    },
+    {
+      "from": "Node_23",
+      "to": "Node_27",
+      "distance": 420,
+      "baseTime": 42
+    },
+    {
+      "from": "Node_23",
+      "to": "Node_24",
+      "distance": 404,
+      "baseTime": 40
+    },
+    {
+      "from": "Node_24",
+      "to": "Node_28",
+      "distance": 95,
+      "baseTime": 9
+    },
+    {
+      "from": "Node_24",
+      "to": "Node_26",
+      "distance": 404,
+      "baseTime": 40
+    },
+    {
+      "from": "Node_24",
+      "to": "Node_27",
+      "distance": 389,
+      "baseTime": 38
+    },
+    {
+      "from": "Node_25",
+      "to": "Node_29",
+      "distance": 271,
+      "baseTime": 27
+    },
+    {
+      "from": "Node_25",
+      "to": "Node_28",
+      "distance": 127,
+      "baseTime": 12
+    },
+    {
+      "from": "Node_25",
+      "to": "Node_26",
+      "distance": 62,
+      "baseTime": 6
+    },
+    {
+      "from": "Node_26",
+      "to": "Node_27",
+      "distance": 281,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_26",
+      "to": "Node_30",
+      "distance": 58,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_26",
+      "to": "Node_29",
+      "distance": 355,
+      "baseTime": 35
+    },
+    {
+      "from": "Node_27",
+      "to": "Node_29",
+      "distance": 278,
+      "baseTime": 27
+    },
+    {
+      "from": "Node_27",
+      "to": "Node_31",
+      "distance": 114,
+      "baseTime": 11
+    },
+    {
+      "from": "Node_27",
+      "to": "Node_28",
+      "distance": 144,
+      "baseTime": 14
+    },
+    {
+      "from": "Node_28",
+      "to": "Node_31",
+      "distance": 307,
+      "baseTime": 30
+    },
+    {
+      "from": "Node_28",
+      "to": "Node_30",
+      "distance": 140,
+      "baseTime": 14
+    },
+    {
+      "from": "Node_28",
+      "to": "Node_29",
+      "distance": 147,
+      "baseTime": 14
+    },
+    {
+      "from": "Node_29",
+      "to": "Node_30",
+      "distance": 155,
+      "baseTime": 15
+    },
+    {
+      "from": "Node_29",
+      "to": "Node_33",
+      "distance": 357,
+      "baseTime": 35
+    },
+    {
+      "from": "Node_29",
+      "to": "Node_32",
+      "distance": 196,
+      "baseTime": 19
+    },
+    {
+      "from": "Node_30",
+      "to": "Node_34",
+      "distance": 73,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_30",
+      "to": "Node_32",
+      "distance": 71,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_30",
+      "to": "Node_31",
+      "distance": 455,
+      "baseTime": 45
+    },
+    {
+      "from": "Node_31",
+      "to": "Node_32",
+      "distance": 252,
+      "baseTime": 25
+    },
+    {
+      "from": "Node_31",
+      "to": "Node_34",
+      "distance": 408,
+      "baseTime": 40
+    },
+    {
+      "from": "Node_31",
+      "to": "Node_35",
+      "distance": 496,
+      "baseTime": 49
+    },
+    {
+      "from": "Node_32",
+      "to": "Node_34",
+      "distance": 475,
+      "baseTime": 47
+    },
+    {
+      "from": "Node_32",
+      "to": "Node_36",
+      "distance": 207,
+      "baseTime": 20
+    },
+    {
+      "from": "Node_32",
+      "to": "Node_35",
+      "distance": 240,
+      "baseTime": 24
+    },
+    {
+      "from": "Node_33",
+      "to": "Node_34",
+      "distance": 465,
+      "baseTime": 46
+    },
+    {
+      "from": "Node_33",
+      "to": "Node_35",
+      "distance": 128,
+      "baseTime": 12
+    },
+    {
+      "from": "Node_33",
+      "to": "Node_37",
+      "distance": 395,
+      "baseTime": 39
+    },
+    {
+      "from": "Node_34",
+      "to": "Node_36",
+      "distance": 139,
+      "baseTime": 13
+    },
+    {
+      "from": "Node_34",
+      "to": "Node_38",
+      "distance": 159,
+      "baseTime": 15
+    },
+    {
+      "from": "Node_34",
+      "to": "Node_37",
+      "distance": 66,
+      "baseTime": 6
+    },
+    {
+      "from": "Node_35",
+      "to": "Node_36",
+      "distance": 170,
+      "baseTime": 17
+    },
+    {
+      "from": "Node_35",
+      "to": "Node_38",
+      "distance": 248,
+      "baseTime": 24
+    },
+    {
+      "from": "Node_35",
+      "to": "Node_37",
+      "distance": 498,
+      "baseTime": 49
+    },
+    {
+      "from": "Node_36",
+      "to": "Node_37",
+      "distance": 170,
+      "baseTime": 17
+    },
+    {
+      "from": "Node_36",
+      "to": "Node_39",
+      "distance": 50,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_36",
+      "to": "Node_38",
+      "distance": 76,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_37",
+      "to": "Node_41",
+      "distance": 146,
+      "baseTime": 14
+    },
+    {
+      "from": "Node_37",
+      "to": "Node_39",
+      "distance": 185,
+      "baseTime": 18
+    },
+    {
+      "from": "Node_37",
+      "to": "Node_40",
+      "distance": 173,
+      "baseTime": 17
+    },
+    {
+      "from": "Node_38",
+      "to": "Node_42",
+      "distance": 208,
+      "baseTime": 20
+    },
+    {
+      "from": "Node_38",
+      "to": "Node_40",
+      "distance": 431,
+      "baseTime": 43
+    },
+    {
+      "from": "Node_38",
+      "to": "Node_39",
+      "distance": 481,
+      "baseTime": 48
+    },
+    {
+      "from": "Node_39",
+      "to": "Node_43",
+      "distance": 465,
+      "baseTime": 46
+    },
+    {
+      "from": "Node_39",
+      "to": "Node_40",
+      "distance": 141,
+      "baseTime": 14
+    },
+    {
+      "from": "Node_39",
+      "to": "Node_41",
+      "distance": 165,
+      "baseTime": 16
+    },
+    {
+      "from": "Node_40",
+      "to": "Node_44",
+      "distance": 105,
+      "baseTime": 10
+    },
+    {
+      "from": "Node_40",
+      "to": "Node_42",
+      "distance": 332,
+      "baseTime": 33
+    },
+    {
+      "from": "Node_40",
+      "to": "Node_41",
+      "distance": 63,
+      "baseTime": 6
+    },
+    {
+      "from": "Node_41",
+      "to": "Node_42",
+      "distance": 149,
+      "baseTime": 14
+    },
+    {
+      "from": "Node_41",
+      "to": "Node_44",
+      "distance": 339,
+      "baseTime": 33
+    },
+    {
+      "from": "Node_41",
+      "to": "Node_45",
+      "distance": 334,
+      "baseTime": 33
+    },
+    {
+      "from": "Node_42",
+      "to": "Node_46",
+      "distance": 255,
+      "baseTime": 25
+    },
+    {
+      "from": "Node_42",
+      "to": "Node_45",
+      "distance": 140,
+      "baseTime": 14
+    },
+    {
+      "from": "Node_42",
+      "to": "Node_44",
+      "distance": 450,
+      "baseTime": 45
+    },
+    {
+      "from": "Node_43",
+      "to": "Node_45",
+      "distance": 393,
+      "baseTime": 39
+    },
+    {
+      "from": "Node_43",
+      "to": "Node_46",
+      "distance": 139,
+      "baseTime": 13
+    },
+    {
+      "from": "Node_43",
+      "to": "Node_47",
+      "distance": 258,
+      "baseTime": 25
+    },
+    {
+      "from": "Node_44",
+      "to": "Node_47",
+      "distance": 446,
+      "baseTime": 44
+    },
+    {
+      "from": "Node_44",
+      "to": "Node_48",
+      "distance": 379,
+      "baseTime": 37
+    },
+    {
+      "from": "Node_44",
+      "to": "Node_46",
+      "distance": 93,
+      "baseTime": 9
+    },
+    {
+      "from": "Node_45",
+      "to": "Node_49",
+      "distance": 237,
+      "baseTime": 23
+    },
+    {
+      "from": "Node_45",
+      "to": "Node_48",
+      "distance": 223,
+      "baseTime": 22
+    },
+    {
+      "from": "Node_45",
+      "to": "Node_46",
+      "distance": 299,
+      "baseTime": 29
+    },
+    {
+      "from": "Node_46",
+      "to": "Node_48",
+      "distance": 396,
+      "baseTime": 39
+    },
+    {
+      "from": "Node_46",
+      "to": "Node_49",
+      "distance": 320,
+      "baseTime": 32
+    },
+    {
+      "from": "Node_46",
+      "to": "Node_50",
+      "distance": 105,
+      "baseTime": 10
+    },
+    {
+      "from": "Node_47",
+      "to": "Node_50",
+      "distance": 241,
+      "baseTime": 24
+    },
+    {
+      "from": "Node_47",
+      "to": "Node_49",
+      "distance": 221,
+      "baseTime": 22
+    },
+    {
+      "from": "Node_47",
+      "to": "Node_51",
+      "distance": 469,
+      "baseTime": 46
+    },
+    {
+      "from": "Node_48",
+      "to": "Node_51",
+      "distance": 437,
+      "baseTime": 43
+    },
+    {
+      "from": "Node_48",
+      "to": "Node_50",
+      "distance": 100,
+      "baseTime": 10
+    },
+    {
+      "from": "Node_48",
+      "to": "Node_49",
+      "distance": 415,
+      "baseTime": 41
+    },
+    {
+      "from": "Node_49",
+      "to": "Node_50",
+      "distance": 191,
+      "baseTime": 19
+    },
+    {
+      "from": "Node_49",
+      "to": "Node_51",
+      "distance": 465,
+      "baseTime": 46
+    },
+    {
+      "from": "Node_49",
+      "to": "Node_53",
+      "distance": 140,
+      "baseTime": 14
+    },
+    {
+      "from": "Node_50",
+      "to": "Node_51",
+      "distance": 324,
+      "baseTime": 32
+    },
+    {
+      "from": "Node_50",
+      "to": "Node_53",
+      "distance": 484,
+      "baseTime": 48
+    },
+    {
+      "from": "Node_50",
+      "to": "Node_52",
+      "distance": 492,
+      "baseTime": 49
+    },
+    {
+      "from": "Node_51",
+      "to": "Node_52",
+      "distance": 268,
+      "baseTime": 26
+    },
+    {
+      "from": "Node_51",
+      "to": "Node_55",
+      "distance": 74,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_51",
+      "to": "Node_53",
+      "distance": 121,
+      "baseTime": 12
+    },
+    {
+      "from": "Node_52",
+      "to": "Node_56",
+      "distance": 89,
+      "baseTime": 8
+    },
+    {
+      "from": "Node_52",
+      "to": "Node_54",
+      "distance": 441,
+      "baseTime": 44
+    },
+    {
+      "from": "Node_52",
+      "to": "Node_55",
+      "distance": 106,
+      "baseTime": 10
+    },
+    {
+      "from": "Node_53",
+      "to": "Node_56",
+      "distance": 376,
+      "baseTime": 37
+    },
+    {
+      "from": "Node_53",
+      "to": "Node_54",
+      "distance": 361,
+      "baseTime": 36
+    },
+    {
+      "from": "Node_53",
+      "to": "Node_57",
+      "distance": 60,
+      "baseTime": 6
+    },
+    {
+      "from": "Node_54",
+      "to": "Node_55",
+      "distance": 202,
+      "baseTime": 20
+    },
+    {
+      "from": "Node_54",
+      "to": "Node_57",
+      "distance": 103,
+      "baseTime": 10
+    },
+    {
+      "from": "Node_54",
+      "to": "Node_58",
+      "distance": 101,
+      "baseTime": 10
+    },
+    {
+      "from": "Node_55",
+      "to": "Node_57",
+      "distance": 99,
+      "baseTime": 9
+    },
+    {
+      "from": "Node_55",
+      "to": "Node_56",
+      "distance": 190,
+      "baseTime": 19
+    },
+    {
+      "from": "Node_55",
+      "to": "Node_59",
+      "distance": 115,
+      "baseTime": 11
+    },
+    {
+      "from": "Node_56",
+      "to": "Node_60",
+      "distance": 469,
+      "baseTime": 46
+    },
+    {
+      "from": "Node_56",
+      "to": "Node_59",
+      "distance": 365,
+      "baseTime": 36
+    },
+    {
+      "from": "Node_56",
+      "to": "Node_58",
+      "distance": 103,
+      "baseTime": 10
+    },
+    {
+      "from": "Node_57",
+      "to": "Node_59",
+      "distance": 207,
+      "baseTime": 20
+    },
+    {
+      "from": "Node_57",
+      "to": "Node_60",
+      "distance": 492,
+      "baseTime": 49
+    },
+    {
+      "from": "Node_57",
+      "to": "Node_61",
+      "distance": 265,
+      "baseTime": 26
+    },
+    {
+      "from": "Node_58",
+      "to": "Node_59",
+      "distance": 417,
+      "baseTime": 41
+    },
+    {
+      "from": "Node_58",
+      "to": "Node_61",
+      "distance": 286,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_58",
+      "to": "Node_62",
+      "distance": 51,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_59",
+      "to": "Node_62",
+      "distance": 452,
+      "baseTime": 45
+    },
+    {
+      "from": "Node_59",
+      "to": "Node_63",
+      "distance": 208,
+      "baseTime": 20
+    },
+    {
+      "from": "Node_59",
+      "to": "Node_60",
+      "distance": 284,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_60",
+      "to": "Node_64",
+      "distance": 257,
+      "baseTime": 25
+    },
+    {
+      "from": "Node_60",
+      "to": "Node_63",
+      "distance": 314,
+      "baseTime": 31
+    },
+    {
+      "from": "Node_60",
+      "to": "Node_62",
+      "distance": 211,
+      "baseTime": 21
+    },
+    {
+      "from": "Node_61",
+      "to": "Node_64",
+      "distance": 224,
+      "baseTime": 22
+    },
+    {
+      "from": "Node_61",
+      "to": "Node_65",
+      "distance": 176,
+      "baseTime": 17
+    },
+    {
+      "from": "Node_61",
+      "to": "Node_62",
+      "distance": 167,
+      "baseTime": 16
+    },
+    {
+      "from": "Node_62",
+      "to": "Node_66",
+      "distance": 53,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_62",
+      "to": "Node_65",
+      "distance": 322,
+      "baseTime": 32
+    },
+    {
+      "from": "Node_62",
+      "to": "Node_63",
+      "distance": 230,
+      "baseTime": 23
+    },
+    {
+      "from": "Node_63",
+      "to": "Node_67",
+      "distance": 181,
+      "baseTime": 18
+    },
+    {
+      "from": "Node_63",
+      "to": "Node_64",
+      "distance": 61,
+      "baseTime": 6
+    },
+    {
+      "from": "Node_63",
+      "to": "Node_66",
+      "distance": 265,
+      "baseTime": 26
+    },
+    {
+      "from": "Node_64",
+      "to": "Node_65",
+      "distance": 284,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_64",
+      "to": "Node_66",
+      "distance": 187,
+      "baseTime": 18
+    },
+    {
+      "from": "Node_64",
+      "to": "Node_68",
+      "distance": 489,
+      "baseTime": 48
+    },
+    {
+      "from": "Node_65",
+      "to": "Node_66",
+      "distance": 63,
+      "baseTime": 6
+    },
+    {
+      "from": "Node_65",
+      "to": "Node_67",
+      "distance": 473,
+      "baseTime": 47
+    },
+    {
+      "from": "Node_65",
+      "to": "Node_68",
+      "distance": 277,
+      "baseTime": 27
+    },
+    {
+      "from": "Node_66",
+      "to": "Node_67",
+      "distance": 451,
+      "baseTime": 45
+    },
+    {
+      "from": "Node_66",
+      "to": "Node_70",
+      "distance": 478,
+      "baseTime": 47
+    },
+    {
+      "from": "Node_66",
+      "to": "Node_69",
+      "distance": 315,
+      "baseTime": 31
+    },
+    {
+      "from": "Node_67",
+      "to": "Node_68",
+      "distance": 58,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_67",
+      "to": "Node_69",
+      "distance": 201,
+      "baseTime": 20
+    },
+    {
+      "from": "Node_67",
+      "to": "Node_70",
+      "distance": 188,
+      "baseTime": 18
+    },
+    {
+      "from": "Node_68",
+      "to": "Node_69",
+      "distance": 384,
+      "baseTime": 38
+    },
+    {
+      "from": "Node_68",
+      "to": "Node_70",
+      "distance": 360,
+      "baseTime": 36
+    },
+    {
+      "from": "Node_68",
+      "to": "Node_71",
+      "distance": 335,
+      "baseTime": 33
+    },
+    {
+      "from": "Node_69",
+      "to": "Node_71",
+      "distance": 54,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_69",
+      "to": "Node_72",
+      "distance": 70,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_69",
+      "to": "Node_73",
+      "distance": 494,
+      "baseTime": 49
+    },
+    {
+      "from": "Node_70",
+      "to": "Node_72",
+      "distance": 264,
+      "baseTime": 26
+    },
+    {
+      "from": "Node_70",
+      "to": "Node_71",
+      "distance": 262,
+      "baseTime": 26
+    },
+    {
+      "from": "Node_70",
+      "to": "Node_74",
+      "distance": 406,
+      "baseTime": 40
+    },
+    {
+      "from": "Node_71",
+      "to": "Node_72",
+      "distance": 251,
+      "baseTime": 25
+    },
+    {
+      "from": "Node_71",
+      "to": "Node_73",
+      "distance": 369,
+      "baseTime": 36
+    },
+    {
+      "from": "Node_71",
+      "to": "Node_74",
+      "distance": 435,
+      "baseTime": 43
+    },
+    {
+      "from": "Node_72",
+      "to": "Node_73",
+      "distance": 299,
+      "baseTime": 29
+    },
+    {
+      "from": "Node_72",
+      "to": "Node_74",
+      "distance": 79,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_72",
+      "to": "Node_75",
+      "distance": 475,
+      "baseTime": 47
+    },
+    {
+      "from": "Node_73",
+      "to": "Node_76",
+      "distance": 480,
+      "baseTime": 48
+    },
+    {
+      "from": "Node_73",
+      "to": "Node_75",
+      "distance": 205,
+      "baseTime": 20
+    },
+    {
+      "from": "Node_73",
+      "to": "Node_77",
+      "distance": 310,
+      "baseTime": 31
+    },
+    {
+      "from": "Node_74",
+      "to": "Node_78",
+      "distance": 119,
+      "baseTime": 11
+    },
+    {
+      "from": "Node_74",
+      "to": "Node_76",
+      "distance": 72,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_74",
+      "to": "Node_77",
+      "distance": 229,
+      "baseTime": 22
+    },
+    {
+      "from": "Node_75",
+      "to": "Node_76",
+      "distance": 289,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_75",
+      "to": "Node_79",
+      "distance": 341,
+      "baseTime": 34
+    },
+    {
+      "from": "Node_75",
+      "to": "Node_78",
+      "distance": 278,
+      "baseTime": 27
+    },
+    {
+      "from": "Node_76",
+      "to": "Node_80",
+      "distance": 94,
+      "baseTime": 9
+    },
+    {
+      "from": "Node_76",
+      "to": "Node_78",
+      "distance": 341,
+      "baseTime": 34
+    },
+    {
+      "from": "Node_76",
+      "to": "Node_79",
+      "distance": 308,
+      "baseTime": 30
+    },
+    {
+      "from": "Node_77",
+      "to": "Node_81",
+      "distance": 50,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_77",
+      "to": "Node_80",
+      "distance": 179,
+      "baseTime": 17
+    },
+    {
+      "from": "Node_77",
+      "to": "Node_79",
+      "distance": 422,
+      "baseTime": 42
+    },
+    {
+      "from": "Node_78",
+      "to": "Node_80",
+      "distance": 397,
+      "baseTime": 39
+    },
+    {
+      "from": "Node_78",
+      "to": "Node_82",
+      "distance": 328,
+      "baseTime": 32
+    },
+    {
+      "from": "Node_78",
+      "to": "Node_79",
+      "distance": 319,
+      "baseTime": 31
+    },
+    {
+      "from": "Node_79",
+      "to": "Node_83",
+      "distance": 76,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_79",
+      "to": "Node_81",
+      "distance": 345,
+      "baseTime": 34
+    },
+    {
+      "from": "Node_79",
+      "to": "Node_80",
+      "distance": 131,
+      "baseTime": 13
+    },
+    {
+      "from": "Node_80",
+      "to": "Node_84",
+      "distance": 455,
+      "baseTime": 45
+    },
+    {
+      "from": "Node_80",
+      "to": "Node_81",
+      "distance": 118,
+      "baseTime": 11
+    },
+    {
+      "from": "Node_80",
+      "to": "Node_83",
+      "distance": 452,
+      "baseTime": 45
+    },
+    {
+      "from": "Node_81",
+      "to": "Node_82",
+      "distance": 391,
+      "baseTime": 39
+    },
+    {
+      "from": "Node_81",
+      "to": "Node_85",
+      "distance": 218,
+      "baseTime": 21
+    },
+    {
+      "from": "Node_81",
+      "to": "Node_83",
+      "distance": 239,
+      "baseTime": 23
+    },
+    {
+      "from": "Node_82",
+      "to": "Node_85",
+      "distance": 102,
+      "baseTime": 10
+    },
+    {
+      "from": "Node_82",
+      "to": "Node_86",
+      "distance": 58,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_82",
+      "to": "Node_83",
+      "distance": 199,
+      "baseTime": 19
+    },
+    {
+      "from": "Node_83",
+      "to": "Node_85",
+      "distance": 119,
+      "baseTime": 11
+    },
+    {
+      "from": "Node_83",
+      "to": "Node_86",
+      "distance": 416,
+      "baseTime": 41
+    },
+    {
+      "from": "Node_83",
+      "to": "Node_84",
+      "distance": 458,
+      "baseTime": 45
+    },
+    {
+      "from": "Node_84",
+      "to": "Node_85",
+      "distance": 490,
+      "baseTime": 49
+    },
+    {
+      "from": "Node_84",
+      "to": "Node_87",
+      "distance": 471,
+      "baseTime": 47
+    },
+    {
+      "from": "Node_84",
+      "to": "Node_86",
+      "distance": 76,
+      "baseTime": 7
+    },
+    {
+      "from": "Node_85",
+      "to": "Node_88",
+      "distance": 104,
+      "baseTime": 10
+    },
+    {
+      "from": "Node_85",
+      "to": "Node_86",
+      "distance": 417,
+      "baseTime": 41
+    },
+    {
+      "from": "Node_85",
+      "to": "Node_89",
+      "distance": 396,
+      "baseTime": 39
+    },
+    {
+      "from": "Node_86",
+      "to": "Node_88",
+      "distance": 148,
+      "baseTime": 14
+    },
+    {
+      "from": "Node_86",
+      "to": "Node_90",
+      "distance": 245,
+      "baseTime": 24
+    },
+    {
+      "from": "Node_86",
+      "to": "Node_89",
+      "distance": 195,
+      "baseTime": 19
+    },
+    {
+      "from": "Node_87",
+      "to": "Node_89",
+      "distance": 305,
+      "baseTime": 30
+    },
+    {
+      "from": "Node_87",
+      "to": "Node_91",
+      "distance": 284,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_87",
+      "to": "Node_90",
+      "distance": 281,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_88",
+      "to": "Node_92",
+      "distance": 316,
+      "baseTime": 31
+    },
+    {
+      "from": "Node_88",
+      "to": "Node_90",
+      "distance": 64,
+      "baseTime": 6
+    },
+    {
+      "from": "Node_88",
+      "to": "Node_89",
+      "distance": 337,
+      "baseTime": 33
+    },
+    {
+      "from": "Node_89",
+      "to": "Node_91",
+      "distance": 169,
+      "baseTime": 16
+    },
+    {
+      "from": "Node_89",
+      "to": "Node_90",
+      "distance": 364,
+      "baseTime": 36
+    },
+    {
+      "from": "Node_89",
+      "to": "Node_92",
+      "distance": 51,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_90",
+      "to": "Node_93",
+      "distance": 330,
+      "baseTime": 33
+    },
+    {
+      "from": "Node_90",
+      "to": "Node_91",
+      "distance": 167,
+      "baseTime": 16
+    },
+    {
+      "from": "Node_90",
+      "to": "Node_94",
+      "distance": 389,
+      "baseTime": 38
+    },
+    {
+      "from": "Node_91",
+      "to": "Node_95",
+      "distance": 336,
+      "baseTime": 33
+    },
+    {
+      "from": "Node_91",
+      "to": "Node_92",
+      "distance": 288,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_91",
+      "to": "Node_94",
+      "distance": 425,
+      "baseTime": 42
+    },
+    {
+      "from": "Node_92",
+      "to": "Node_94",
+      "distance": 275,
+      "baseTime": 27
+    },
+    {
+      "from": "Node_92",
+      "to": "Node_95",
+      "distance": 218,
+      "baseTime": 21
+    },
+    {
+      "from": "Node_92",
+      "to": "Node_96",
+      "distance": 53,
+      "baseTime": 5
+    },
+    {
+      "from": "Node_93",
+      "to": "Node_94",
+      "distance": 287,
+      "baseTime": 28
+    },
+    {
+      "from": "Node_93",
+      "to": "Node_97",
+      "distance": 119,
+      "baseTime": 11
+    },
+    {
+      "from": "Node_93",
+      "to": "Node_96",
+      "distance": 411,
+      "baseTime": 41
+    },
+    {
+      "from": "Node_94",
+      "to": "Node_98",
+      "distance": 490,
+      "baseTime": 49
+    },
+    {
+      "from": "Node_94",
+      "to": "Node_97",
+      "distance": 418,
+      "baseTime": 41
+    },
+    {
+      "from": "Node_94",
+      "to": "Node_96",
+      "distance": 228,
+      "baseTime": 22
+    },
+    {
+      "from": "Node_95",
+      "to": "Node_96",
+      "distance": 192,
+      "baseTime": 19
+    },
+    {
+      "from": "Node_95",
+      "to": "Node_97",
+      "distance": 308,
+      "baseTime": 30
+    },
+    {
+      "from": "Node_95",
+      "to": "Node_99",
+      "distance": 326,
+      "baseTime": 32
+    },
+    {
+      "from": "Node_96",
+      "to": "Node_99",
+      "distance": 101,
+      "baseTime": 10
+    },
+    {
+      "from": "Node_96",
+      "to": "Node_97",
+      "distance": 91,
+      "baseTime": 9
+    },
+    {
+      "from": "Node_96",
+      "to": "Node_98",
+      "distance": 85,
+      "baseTime": 8
+    },
+    {
+      "from": "Node_97",
+      "to": "Node_99",
+      "distance": 449,
+      "baseTime": 44
+    },
+    {
+      "from": "Node_97",
+      "to": "Node_98",
+      "distance": 359,
+      "baseTime": 35
+    },
+    {
+      "from": "Node_98",
+      "to": "Node_99",
+      "distance": 334,
+      "baseTime": 33
+    }
+  ],
+  "storms": [
+    {
+      "routeId": "Node_3-Node_7",
+      "startTime": "2024-01-02T20:00:00",
+      "endTime": "2024-01-03T02:00:00",
+      "severity": "low"
+    },
+    {
+      "routeId": "Node_7-Node_11",
+      "startTime": "2024-01-03T04:00:00",
+      "endTime": "2024-01-03T14:00:00",
+      "severity": "low"
+    },
+    {
+      "routeId": "Node_63-Node_66",
+      "startTime": "2024-01-02T12:00:00",
+      "endTime": "2024-01-02T19:00:00",
+      "severity": "low"
+    },
+    {
+      "routeId": "Node_63-Node_64",
+      "startTime": "2024-01-01T10:00:00",
+      "endTime": "2024-01-01T12:00:00",
+      "severity": "low"
+    },
+    {
+      "routeId": "Node_58-Node_62",
+      "startTime": "2024-01-01T22:00:00",
+      "endTime": "2024-01-02T08:00:00",
+      "severity": "medium"
+    },
+    {
+      "routeId": "Node_10-Node_14",
+      "startTime": "2024-01-02T13:00:00",
+      "endTime": "2024-01-02T23:00:00",
+      "severity": "low"
+    },
+    {
+      "routeId": "Node_19-Node_20",
+      "startTime": "2024-01-02T18:00:00",
+      "endTime": "2024-01-02T20:00:00",
+      "severity": "medium"
+    },
+    {
+      "routeId": "Node_28-Node_29",
+      "startTime": "2024-01-02T05:00:00",
+      "endTime": "2024-01-02T13:00:00",
+      "severity": "medium"
+    },
+    {
+      "routeId": "Node_54-Node_58",
+      "startTime": "2024-01-01T15:00:00",
+      "endTime": "2024-01-02T01:00:00",
+      "severity": "low"
+    },
+    {
+      "routeId": "Node_40-Node_41",
+      "startTime": "2024-01-03T06:00:00",
+      "endTime": "2024-01-03T12:00:00",
+      "severity": "low"
+    },
+    {
+      "routeId": "Node_85-Node_86",
+      "startTime": "2024-01-01T10:00:00",
+      "endTime": "2024-01-01T19:00:00",
+      "severity": "low"
+    },
+    {
+      "routeId": "Node_57-Node_61",
+      "startTime": "2024-01-01T09:00:00",
+      "endTime": "2024-01-01T18:00:00",
+      "severity": "high"
+    },
+    {
+      "routeId": "Node_91-Node_92",
+      "startTime": "2024-01-02T22:00:00",
+      "endTime": "2024-01-03T06:00:00",
+      "severity": "medium"
+    },
+    {
+      "routeId": "Node_79-Node_81",
+      "startTime": "2024-01-02T08:00:00",
+      "endTime": "2024-01-02T17:00:00",
+      "severity": "medium"
+    },
+    {
+      "routeId": "Node_37-Node_40",
+      "startTime": "2024-01-02T01:00:00",
+      "endTime": "2024-01-02T10:00:00",
+      "severity": "high"
+    },
+    {
+      "routeId": "Node_69-Node_73",
+      "startTime": "2024-01-02T15:00:00",
+      "endTime": "2024-01-03T00:00:00",
+      "severity": "high"
+    },
+    {
+      "routeId": "Node_46-Node_48",
+      "startTime": "2024-01-03T04:00:00",
+      "endTime": "2024-01-03T12:00:00",
+      "severity": "high"
+    },
+    {
+      "routeId": "Node_9-Node_13",
+      "startTime": "2024-01-01T20:00:00",
+      "endTime": "2024-01-01T23:00:00",
+      "severity": "low"
+    },
+    {
+      "routeId": "Node_93-Node_94",
+      "startTime": "2024-01-01T11:00:00",
+      "endTime": "2024-01-01T18:00:00",
+      "severity": "low"
+    },
+    {
+      "routeId": "Node_40-Node_41",
+      "startTime": "2024-01-02T18:00:00",
+      "endTime": "2024-01-03T04:00:00",
+      "severity": "medium"
+    }
+  ]
+}
