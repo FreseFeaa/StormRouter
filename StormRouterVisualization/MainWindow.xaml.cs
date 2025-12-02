@@ -27,6 +27,7 @@ namespace StormRouterVisualization
         private TransformGroup _transformGroup = new TransformGroup();
         private bool _isDragging = false;
         private Dictionary<string, Point> _nodePositions = new Dictionary<string, Point>();
+        private GraphVisualizer _graphVisualizer = new GraphVisualizer(); // <-- Добавить
         private Rect _graphBounds;
         private HashSet<string> _routeNodes = new HashSet<string>();
         private TimeSpan _computationTime;
@@ -181,36 +182,20 @@ namespace StormRouterVisualization
         private void VisualizeGraph()
         {
             if (_currentData == null || _currentResults == null || _currentResults.Count == 0) 
-            {
-                MessageBox.Show("Не удалось рассчитать маршруты", "Информация", 
-                              MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
-            }
 
             GraphCanvas.Children.Clear();
-            _routeNodes.Clear();
-
-            // Сохраняем узлы маршрута для выделения
-            if (_currentResults.Count > 0)
-            {
-                foreach (var node in _currentResults[0].Path)
-                {
-                    _routeNodes.Add(node);
-                }
-            }
-
             _nodePositions = CalculateNodePositions();
             AutoFitGraph();
 
-            // Правильный порядок отрисовки
-            DrawEdges(_nodePositions);
-            if (_currentResults.Count > 0)
-            {
-                DrawOptimalRoute(_nodePositions, _currentResults[0]);
-            }
-            DrawNodes(_nodePositions);
+            // Используем визуализатор
+            _graphVisualizer.Visualize(
+                GraphCanvas, 
+                _currentData, 
+                _currentResults[0], 
+                _nodePositions
+            );
         }
-
         private Dictionary<string, Point> CalculateNodePositions()
         {
             var positions = new Dictionary<string, Point>();
@@ -479,348 +464,19 @@ namespace StormRouterVisualization
             return nodes.OrderBy(n => n).ToList();
         }
 
-        private void DrawEdges(Dictionary<string, Point> nodePositions)
-        {
-            if (_currentData?.Routes == null) return;
+        // private (double slowdown, int risk) GetStormCoefficients(string severity)
+        // {
+        //     if (string.IsNullOrEmpty(severity))
+        //         return (1.0, 0);
 
-            // Более тонкие и прозрачные ребра
-            double edgeOpacity = _nodePositions.Count > 30 ? 0.4 : 0.6;
-            double baseThickness = _nodePositions.Count > 50 ? 0.8 : 1.2;
-
-            foreach (var route in _currentData.Routes)
-            {
-                if (!nodePositions.ContainsKey(route.From) || !nodePositions.ContainsKey(route.To))
-                    continue;
-
-                var start = nodePositions[route.From];
-                var end = nodePositions[route.To];
-
-                var storm = GetStormForRoute(route.From, route.To);
-                
-                // Только штормовые ребра цветные, обычные - серые
-                Brush strokeBrush;
-                double strokeThickness;
-                
-                if (storm != null)
-                {
-                    strokeBrush = GetStormColor(storm.Severity);
-                    strokeThickness = baseThickness * 1.8;
-                }
-                else
-                {
-                    strokeBrush = new SolidColorBrush(NormalEdgeColor);
-                    strokeThickness = baseThickness;
-                }
-
-                var line = new Line
-                {
-                    X1 = start.X,
-                    Y1 = start.Y,
-                    X2 = end.X,
-                    Y2 = end.Y,
-                    Stroke = strokeBrush,
-                    StrokeThickness = strokeThickness,
-                    ToolTip = CreateEdgeTooltip(route, storm),
-                    Opacity = edgeOpacity,
-                    StrokeDashArray = storm != null ? new DoubleCollection { 2, 2 } : null // Пунктир для штормов
-                };
-
-                GraphCanvas.Children.Add(line);
-
-                // Время только для маленьких графов и только для не-штормовых ребер
-                if (_nodePositions.Count <= 15 && storm == null)
-                {
-                    var textPosition = CalculateTextPosition(start, end, nodePositions);
-                    DrawEdgeText(textPosition, $"{route.BaseTime}ч", Brushes.DarkSlateGray, 8);
-                }
-            }
-        }
-
-        private Point CalculateTextPosition(Point start, Point end, Dictionary<string, Point> nodePositions)
-        {
-            // Смещаем текст от центра, чтобы не перекрывался маршрутом
-            Vector direction = end - start;
-            if (direction.Length > 0)
-            {
-                direction.Normalize();
-                // Перпендикуляр к направлению ребра
-                Vector perpendicular = new Vector(-direction.Y, direction.X);
-                perpendicular.Normalize();
-                
-                // Смещаем текст на 10 пикселей в перпендикулярном направлении
-                Point center = new Point((start.X + end.X) / 2, (start.Y + end.Y) / 2);
-                return new Point(center.X + perpendicular.X * 10, center.Y + perpendicular.Y * 10);
-            }
-            
-            return new Point((start.X + end.X) / 2, (start.Y + end.Y) / 2);
-        }
-
-        private void DrawNodes(Dictionary<string, Point> nodePositions)
-        {
-            // Адаптивные размеры
-            double baseNodeSize = _nodePositions.Count > 50 ? 24 : 
-                                 _nodePositions.Count > 20 ? 30 : 36;
-            double baseFontSize = _nodePositions.Count > 50 ? 8 : 
-                                 _nodePositions.Count > 20 ? 9 : 11;
-
-            foreach (var (nodeName, position) in nodePositions)
-            {
-                Brush nodeColor = GetNodeColor(nodeName);
-                
-                // Стильный узел с градиентом
-                var ellipse = new Ellipse
-                {
-                    Width = baseNodeSize,
-                    Height = baseNodeSize,
-                    Fill = CreateNodeGradient(nodeColor),
-                    Stroke = Brushes.White,
-                    StrokeThickness = 1.5,
-                    ToolTip = CreateNodeTooltip(nodeName),
-                    Cursor = Cursors.Hand
-                };
-
-                // Легкая тень
-                ellipse.Effect = new System.Windows.Media.Effects.DropShadowEffect
-                {
-                    Color = Colors.Black,
-                    Direction = 320,
-                    ShadowDepth = 2,
-                    Opacity = 0.3,
-                    BlurRadius = 3
-                };
-
-                Canvas.SetLeft(ellipse, position.X - baseNodeSize / 2);
-                Canvas.SetTop(ellipse, position.Y - baseNodeSize / 2);
-
-                GraphCanvas.Children.Add(ellipse);
-
-                // Подписываем ВСЕ узлы с улучшенным оформлением текста
-                DrawNodeText(position, nodeName, Brushes.White, baseFontSize, baseNodeSize);
-            }
-        }
-
-        private Brush CreateNodeGradient(Brush baseColor)
-        {
-            if (baseColor is SolidColorBrush solidBrush)
-            {
-                Color baseColorValue = solidBrush.Color;
-                Color lighterColor = Color.FromArgb(255, 
-                    (byte)Math.Min(255, baseColorValue.R + 40),
-                    (byte)Math.Min(255, baseColorValue.G + 40),
-                    (byte)Math.Min(255, baseColorValue.B + 40));
-
-                var gradient = new RadialGradientBrush
-                {
-                    GradientOrigin = new Point(0.3, 0.3),
-                    Center = new Point(0.3, 0.3),
-                    RadiusX = 0.8,
-                    RadiusY = 0.8,
-                    GradientStops = new GradientStopCollection
-                    {
-                        new GradientStop(lighterColor, 0.0),
-                        new GradientStop(baseColorValue, 1.0)
-                    }
-                };
-                return gradient;
-            }
-            return baseColor;
-        }
-
-        private Brush GetNodeColor(string nodeName)
-        {
-            if (nodeName == _currentData?.StartPoint)
-                return new SolidColorBrush(StartNodeColor);
-            else if (nodeName == _currentData?.EndPoint)
-                return new SolidColorBrush(EndNodeColor);
-            else if (_routeNodes.Contains(nodeName))
-                return new SolidColorBrush(RouteNodeColor);
-            else
-                return new SolidColorBrush(NormalNodeColor);
-        }
-
-        private void DrawOptimalRoute(Dictionary<string, Point> nodePositions, RouteState optimalRoute)
-        {
-            if (optimalRoute.Path.Count < 2) return;
-
-            for (int i = 0; i < optimalRoute.Path.Count - 1; i++)
-            {
-                var from = optimalRoute.Path[i];
-                var to = optimalRoute.Path[i + 1];
-
-                if (!nodePositions.ContainsKey(from) || !nodePositions.ContainsKey(to))
-                    continue;
-
-                var start = nodePositions[from];
-                var end = nodePositions[to];
-
-                // Основная линия маршрута - жирная но не слишком
-                var line = new Line
-                {
-                    X1 = start.X,
-                    Y1 = start.Y,
-                    X2 = end.X,
-                    Y2 = end.Y,
-                    Stroke = new SolidColorBrush(RouteColor),
-                    StrokeThickness = _nodePositions.Count > 50 ? 4 : 5,
-                    StrokeStartLineCap = PenLineCap.Round,
-                    StrokeEndLineCap = PenLineCap.Round,
-                    Opacity = 0.9
-                };
-
-                GraphCanvas.Children.Add(line);
-
-                // Стрелка направления (только для не слишком больших графов)
-                if (_nodePositions.Count <= 30)
-                {
-                    DrawDirectionArrow(start, end);
-                }
-            }
-        }
-
-        private void DrawDirectionArrow(Point start, Point end)
-        {
-            Vector direction = end - start;
-            if (direction.Length > 0)
-            {
-                direction.Normalize();
-            }
-
-            Vector perpendicular = new Vector(-direction.Y, direction.X);
-            double arrowSize = 8;
-
-            Point arrowPoint1 = end - direction * arrowSize + perpendicular * arrowSize / 2;
-            Point arrowPoint2 = end - direction * arrowSize - perpendicular * arrowSize / 2;
-
-            var arrow = new Polygon
-            {
-                Points = new PointCollection { end, arrowPoint1, arrowPoint2 },
-                Fill = new SolidColorBrush(RouteColor),
-                Stroke = new SolidColorBrush(RouteColor),
-                StrokeThickness = 1
-            };
-
-            GraphCanvas.Children.Add(arrow);
-        }
-
-        private void DrawNodeText(Point position, string text, Brush color, double fontSize, double nodeSize)
-        {
-            var textBlock = new TextBlock
-            {
-                Text = text,
-                Foreground = color,
-                FontSize = fontSize,
-                FontWeight = FontWeights.SemiBold, // Менее жирный шрифт
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                TextAlignment = TextAlignment.Center
-            };
-
-            // Более легкий и стильный фон
-            var border = new Border
-            {
-                Background = new SolidColorBrush(Color.FromArgb(180, 40, 40, 40)), // Темно-серый с прозрачностью
-                CornerRadius = new CornerRadius(3),
-                Padding = new Thickness(4, 1, 4, 1),
-                Child = textBlock
-            };
-
-            border.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
-            
-            Canvas.SetLeft(border, position.X - border.DesiredSize.Width / 2);
-            Canvas.SetTop(border, position.Y - border.DesiredSize.Height / 2);
-
-            GraphCanvas.Children.Add(border);
-        }
-
-        private void DrawEdgeText(Point position, string text, Brush color, double fontSize)
-        {
-            var border = new Border
-            {
-                Background = new SolidColorBrush(Color.FromArgb(230, 255, 255, 255)),
-                BorderBrush = new SolidColorBrush(Color.FromArgb(150, 200, 200, 200)),
-                BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(2),
-                Padding = new Thickness(3, 1, 3, 1),
-                Child = new TextBlock
-                {
-                    Text = text,
-                    Foreground = color,
-                    FontSize = fontSize,
-                    FontWeight = FontWeights.Normal
-                }
-            };
-
-            border.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
-            
-            Canvas.SetLeft(border, position.X - border.DesiredSize.Width / 2);
-            Canvas.SetTop(border, position.Y - border.DesiredSize.Height / 2);
-
-            GraphCanvas.Children.Add(border);
-        }
-
-        private Storm? GetStormForRoute(string from, string to)
-        {
-            var routeId = $"{from}-{to}";
-            return _currentData?.Storms?.FirstOrDefault(s => s.RouteId == routeId);
-        }
-
-        private Brush GetStormColor(string severity)
-        {
-            return severity?.ToLower() switch
-            {
-                "low" => new SolidColorBrush(Color.FromRgb(255, 213, 79)),    // Светло-желтый
-                "medium" => new SolidColorBrush(Color.FromRgb(255, 167, 38)), // Светло-оранжевый
-                "high" => new SolidColorBrush(Color.FromRgb(255, 87, 34)),    // Ярко-оранжевый
-                _ => new SolidColorBrush(NormalEdgeColor)
-            };
-        }
-
-        private object CreateEdgeTooltip(Route route, Storm? storm)
-        {
-            var tooltip = $"Маршрут: {route.From} → {route.To}\n" +
-                         $"Расстояние: {route.Distance}\n" +
-                         $"Базовое время: {route.BaseTime}ч";
-
-            if (storm != null)
-            {
-                var coefficients = GetStormCoefficients(storm.Severity);
-                tooltip += $"\n\n⚡ ШТОРМ\n" +
-                          $"Уровень: {storm.Severity}\n" +
-                          $"Замедление: {coefficients.slowdown:F1}x\n" +
-                          $"Риск: {coefficients.risk}\n" +
-                          $"Время: {storm.StartTime:dd.MM HH:mm} - {storm.EndTime:dd.MM HH:mm}";
-            }
-
-            return tooltip;
-        }
-
-        private (double slowdown, int risk) GetStormCoefficients(string severity)
-        {
-            if (string.IsNullOrEmpty(severity))
-                return (1.0, 0);
-
-            return severity.ToLower() switch
-            {
-                "low" => (1.2, 20),
-                "medium" => (1.5, 40),
-                "high" => (2.0, 60),
-                _ => (1.0, 0)
-            };
-        }
-
-        private object CreateNodeTooltip(string nodeName)
-        {
-            var tooltip = $"Узел: {nodeName}";
-            
-            if (nodeName == _currentData?.StartPoint)
-                tooltip += " 🟢 (Старт)";
-            else if (nodeName == _currentData?.EndPoint)
-                tooltip += " 🔴 (Финиш)";
-            else if (_routeNodes.Contains(nodeName))
-                tooltip += " 🟠 (В маршруте)";
-                
-            return tooltip;
-        }
+        //     return severity.ToLower() switch
+        //     {
+        //         "low" => (1.2, 20),
+        //         "medium" => (1.5, 40),
+        //         "high" => (2.0, 60),
+        //         _ => (1.0, 0)
+        //     };
+        // }
 
         private void UpdateRouteDetails()
         {
@@ -871,7 +527,7 @@ namespace StormRouterVisualization
                         
                         if (!string.IsNullOrEmpty(segment.StormSeverity))
                         {
-                            var coefficients = GetStormCoefficients(segment.StormSeverity);
+                            var coefficients = GraphVisualizer.GetStormCoefficients(segment.StormSeverity);
                             sb.AppendLine($"     ⚡ ШТОРМ: уровень {segment.StormSeverity}");
                             sb.AppendLine($"     📈 Коэффициент замедления: {coefficients.slowdown:F1}x");
                             sb.AppendLine($"     🎯 Добавочный риск: {coefficients.risk}");
@@ -935,7 +591,7 @@ namespace StormRouterVisualization
             
             foreach (var stormSegment in stormSegments)
             {
-                var coefficients = GetStormCoefficients(stormSegment.StormSeverity!);
+                var coefficients = GraphVisualizer.GetStormCoefficients(stormSegment.StormSeverity);
                 AddStatistic($"  - {stormSegment.FromNode}→{stormSegment.ToNode}", 
                            $"{stormSegment.StormSeverity} (риск +{coefficients.risk})");
             }
