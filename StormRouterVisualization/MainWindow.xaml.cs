@@ -84,7 +84,9 @@ namespace StormRouterVisualization
         {
             try
             {
-                var randomData = GenerateRandomInputData();
+                var generator = new RandomGraphGenerator();
+                var randomData = generator.Generate(); 
+
                 if (randomData != null)
                 {
                     LoadInputData(randomData, "Случайный граф");
@@ -92,127 +94,23 @@ namespace StormRouterVisualization
                 }
                 else
                 {
-                    MessageBox.Show("Не удалось сгенерировать граф с валидным маршрутом. Попробуйте еще раз.", 
-                                  "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(
+                        "Не удалось сгенерировать граф с валидным маршрутом. Попробуйте еще раз.", 
+                        "Информация", 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Information
+                    );
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при генерации графа:\n{ex.Message}", "Ошибка", 
-                              MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    $"Ошибка при генерации графа:\n{ex.Message}", 
+                    "Ошибка", 
+                    MessageBoxButton.OK, 
+                    MessageBoxImage.Error
+                );
             }
-        }
-
-        private InputData? GenerateRandomInputData()
-        {
-            var random = new Random();
-            int nodeCount = random.Next(10, 31); // Уменьшил до 30 максимум для лучшей визуализации
-            var nodes = Enumerable.Range(1, nodeCount).Select(i => $"Node{i}").ToList();
-
-            var routes = new List<Route>();
-            var storms = new List<Storm>();
-
-            // Создаем связный граф с гарантированным путем
-            var connectedNodes = new HashSet<string>();
-            var unconnectedNodes = new List<string>(nodes);
-            
-            // Выбираем случайные стартовую и конечную точки
-            string startPoint = unconnectedNodes[random.Next(unconnectedNodes.Count)];
-            connectedNodes.Add(startPoint);
-            unconnectedNodes.Remove(startPoint);
-
-            string endPoint;
-            do
-            {
-                endPoint = unconnectedNodes[random.Next(unconnectedNodes.Count)];
-            } while (endPoint == startPoint);
-
-            // Строим минимальное остовное дерево для обеспечения связности
-            while (unconnectedNodes.Count > 0)
-            {
-                string from = connectedNodes.ElementAt(random.Next(connectedNodes.Count));
-                string to = unconnectedNodes[random.Next(unconnectedNodes.Count)];
-
-                double distance = random.Next(50, 500);
-                double baseTime = distance / 50.0;
-
-                routes.Add(new Route { From = from, To = to, Distance = distance, BaseTime = baseTime });
-                
-                connectedNodes.Add(to);
-                unconnectedNodes.Remove(to);
-            }
-
-            // Добавляем дополнительные ребра для разнообразия
-            int additionalEdges = random.Next(nodeCount, nodeCount * 2);
-            var addedEdges = new HashSet<(string, string)>();
-            
-            // Добавляем существующие ребра в набор
-            foreach (var route in routes)
-            {
-                addedEdges.Add((route.From, route.To));
-            }
-
-            for (int i = 0; i < additionalEdges; i++)
-            {
-                string from, to;
-                int attempts = 0;
-                do
-                {
-                    from = nodes[random.Next(nodeCount)];
-                    to = nodes[random.Next(nodeCount)];
-                    attempts++;
-                    if (attempts > 50) break; // Защита от бесконечного цикла
-                } while (from == to || addedEdges.Contains((from, to)));
-
-                if (attempts <= 50)
-                {
-                    double distance = random.Next(50, 500);
-                    double baseTime = distance / 50.0;
-
-                    routes.Add(new Route { From = from, To = to, Distance = distance, BaseTime = baseTime });
-                    addedEdges.Add((from, to));
-                }
-            }
-
-            // Добавляем штормы на некоторые ребра (15% ребер)
-            foreach (var route in routes)
-            {
-                if (random.NextDouble() < 0.15)
-                {
-                    DateTime stormStart = DateTime.Now.AddHours(random.Next(-24, 48));
-                    DateTime stormEnd = stormStart.AddHours(random.Next(1, 12));
-                    string severity = random.Next(3) switch
-                    {
-                        0 => "low",
-                        1 => "medium",
-                        _ => "high"
-                    };
-
-                    storms.Add(new Storm
-                    {
-                        RouteId = $"{route.From}-{route.To}",
-                        StartTime = stormStart,
-                        EndTime = stormEnd,
-                        Severity = severity
-                    });
-                }
-            }
-
-            var inputData = new InputData
-            {
-                StartPoint = startPoint,
-                EndPoint = endPoint,
-                DepartureTime = DateTime.Now,
-                Routes = routes,
-                Storms = storms
-            };
-
-            // Проверяем, что маршрут существует
-            var testRouter = new StormRouter();
-            testRouter.LoadData(inputData);
-            var testResults = testRouter.CalculateOptimalRoutes(startPoint, endPoint, DateTime.Now, 1);
-            
-            return testResults.Count > 0 ? inputData : null;
         }
 
         private void LoadAndProcessJsonFile(string filePath)
