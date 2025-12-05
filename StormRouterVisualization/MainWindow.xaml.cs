@@ -27,7 +27,7 @@ namespace StormRouterVisualization
         private TransformGroup _transformGroup = new TransformGroup();
         private bool _isDragging = false;
         private Dictionary<string, Point> _nodePositions = new Dictionary<string, Point>();
-        private GraphVisualizer _graphVisualizer = new GraphVisualizer(); // <-- Добавить
+        private GraphVisualizer _graphVisualizer = new GraphVisualizer(); 
         private Rect _graphBounds;
         private HashSet<string> _routeNodes = new HashSet<string>();
         private TimeSpan _computationTime;
@@ -43,7 +43,6 @@ namespace StormRouterVisualization
             _transformGroup.Children.Add(_translateTransform);
             GraphCanvas.RenderTransform = _transformGroup;
 
-            // Инициализация сервиса перед генерацией графа
             var styles = new Dictionary<string, Style>();
             if (TryFindResource("StatTextBlock") is Style statStyle)
                 styles["StatTextBlock"] = statStyle;
@@ -177,238 +176,24 @@ namespace StormRouterVisualization
 
                     InfoTabControl.SelectedIndex = 1;
                 }
+                
         private void VisualizeGraph()
         {
             if (_currentData == null || _currentResults == null || _currentResults.Count == 0) 
                 return;
 
             GraphCanvas.Children.Clear();
-            _nodePositions = CalculateNodePositions();
+
+            _nodePositions = _graphVisualizer.CalculateNodePositions(_currentData);
+
             AutoFitGraph();
 
-            // Используем визуализатор
             _graphVisualizer.Visualize(
                 GraphCanvas, 
                 _currentData, 
                 _currentResults[0], 
                 _nodePositions
             );
-        }
-        private Dictionary<string, Point> CalculateNodePositions()
-        {
-            var positions = new Dictionary<string, Point>();
-            var nodes = GetAllNodes();
-
-            if (nodes.Count == 0) return positions;
-
-            // Для маленьких графов - стабильное круговое расположение
-            if (nodes.Count <= 8)
-            {
-                return CalculateStableCircularLayout(nodes, 200);
-            }
-            // Для средних графов - улучшенный силовой алгоритм
-            else if (nodes.Count <= 30)
-            {
-                return CalculateEnhancedForceDirectedLayout(nodes, _currentData?.Routes ?? new List<Route>());
-            }
-            // Для больших графов - иерархическое расположение
-            else
-            {
-                return CalculateHierarchicalLayout(nodes, _currentData?.Routes ?? new List<Route>());
-            }
-        }
-
-        private Dictionary<string, Point> CalculateStableCircularLayout(List<string> nodes, double radius)
-        {
-            var positions = new Dictionary<string, Point>();
-            double centerX = 400;
-            double centerY = 300;
-
-            // Сортируем узлы для стабильного расположения
-            var sortedNodes = nodes.OrderBy(n => n).ToList();
-
-            double angleStep = 2 * Math.PI / sortedNodes.Count;
-
-            for (int i = 0; i < sortedNodes.Count; i++)
-            {
-                double angle = i * angleStep;
-                double x = centerX + radius * Math.Cos(angle);
-                double y = centerY + radius * Math.Sin(angle);
-                positions[sortedNodes[i]] = new Point(x, y);
-            }
-
-            return positions;
-        }
-
-        private Dictionary<string, Point> CalculateEnhancedForceDirectedLayout(List<string> nodes, List<Route> routes)
-        {
-            var positions = CalculateStableCircularLayout(nodes, Math.Max(250, nodes.Count * 8));
-            
-            // Параметры алгоритма
-            double repulsionForce = 150000 / nodes.Count;
-            double attractionForce = 0.1;
-            double idealLength = 120;
-            int iterations = 150;
-            double damping = 0.9;
-
-            var connections = new Dictionary<string, List<string>>();
-            foreach (var node in nodes)
-            {
-                connections[node] = new List<string>();
-            }
-            
-            foreach (var route in routes)
-            {
-                if (connections.ContainsKey(route.From) && connections.ContainsKey(route.To))
-                {
-                    connections[route.From].Add(route.To);
-                    if (!connections[route.To].Contains(route.From))
-                        connections[route.To].Add(route.From);
-                }
-            }
-
-            for (int iter = 0; iter < iterations; iter++)
-            {
-                var forces = new Dictionary<string, Vector>();
-                
-                foreach (var node in nodes)
-                {
-                    forces[node] = new Vector(0, 0);
-                }
-
-                // Силы отталкивания
-                for (int i = 0; i < nodes.Count; i++)
-                {
-                    for (int j = i + 1; j < nodes.Count; j++)
-                    {
-                        var node1 = nodes[i];
-                        var node2 = nodes[j];
-                        
-                        var delta = positions[node1] - positions[node2];
-                        double distance = Math.Max(delta.Length, 0.1);
-                        
-                        double force = repulsionForce / (distance * distance);
-                        var forceVector = new Vector(
-                            delta.X / distance * force,
-                            delta.Y / distance * force
-                        );
-                        
-                        forces[node1] += forceVector;
-                        forces[node2] -= forceVector;
-                    }
-                }
-
-                // Силы притяжения для связанных узлов
-                foreach (var route in routes)
-                {
-                    if (!positions.ContainsKey(route.From) || !positions.ContainsKey(route.To))
-                        continue;
-
-                    var fromPos = positions[route.From];
-                    var toPos = positions[route.To];
-                    
-                    var delta = toPos - fromPos;
-                    double distance = Math.Max(delta.Length, 0.1);
-                    
-                    double force = attractionForce * (distance - idealLength);
-                    var forceVector = new Vector(
-                        delta.X / distance * force,
-                        delta.Y / distance * force
-                    );
-                    
-                    forces[route.From] += forceVector;
-                    forces[route.To] -= forceVector;
-                }
-
-                // Применение сил
-                foreach (var node in nodes)
-                {
-                    var force = forces[node];
-                    
-                    double maxForce = 8;
-                    if (force.Length > maxForce)
-                    {
-                        force = force / force.Length * maxForce;
-                    }
-                    
-                    positions[node] = new Point(
-                        positions[node].X + force.X * damping,
-                        positions[node].Y + force.Y * damping
-                    );
-                    
-                    // Ограничение области
-                    double margin = 80;
-                    positions[node] = new Point(
-                        Math.Max(margin, Math.Min(720, positions[node].X)),
-                        Math.Max(margin, Math.Min(520, positions[node].Y))
-                    );
-                }
-
-                damping *= 0.98;
-            }
-
-            return positions;
-        }
-
-        private Dictionary<string, Point> CalculateHierarchicalLayout(List<string> nodes, List<Route> routes)
-        {
-            var positions = new Dictionary<string, Point>();
-            
-            // Разбиваем на уровни по удаленности от стартовой точки
-            var levels = new Dictionary<string, int>();
-            var queue = new Queue<string>();
-            
-            foreach (var node in nodes)
-            {
-                levels[node] = -1;
-            }
-            
-            if (_currentData != null && nodes.Contains(_currentData.StartPoint))
-            {
-                levels[_currentData.StartPoint] = 0;
-                queue.Enqueue(_currentData.StartPoint);
-            }
-
-            // BFS для определения уровней
-            while (queue.Count > 0)
-            {
-                var current = queue.Dequeue();
-                var connectedNodes = routes.Where(r => r.From == current).Select(r => r.To)
-                    .Concat(routes.Where(r => r.To == current).Select(r => r.From))
-                    .Distinct();
-
-                foreach (var neighbor in connectedNodes)
-                {
-                    if (levels[neighbor] == -1)
-                    {
-                        levels[neighbor] = levels[current] + 1;
-                        queue.Enqueue(neighbor);
-                    }
-                }
-            }
-
-            // Располагаем узлы по уровням
-            var nodesByLevel = nodes.GroupBy(n => Math.Max(0, levels[n]))
-                                  .OrderBy(g => g.Key)
-                                  .ToList();
-
-            double startX = 100;
-            double startY = 100;
-            double levelSpacing = 500.0 / Math.Max(1, nodesByLevel.Count);
-
-            foreach (var levelGroup in nodesByLevel)
-            {
-                var levelNodes = levelGroup.OrderBy(n => n).ToList();
-                double y = startY + levelGroup.Key * levelSpacing;
-                
-                for (int i = 0; i < levelNodes.Count; i++)
-                {
-                    double x = startX + (600.0 / (levelNodes.Count + 1)) * (i + 1);
-                    positions[levelNodes[i]] = new Point(x, y);
-                }
-            }
-
-            return positions;
         }
 
         private void AutoFitGraph()
@@ -444,22 +229,6 @@ namespace StormRouterVisualization
             _translateTransform.Y = offsetY;
             _scaleTransform.ScaleX = scale;
             _scaleTransform.ScaleY = scale;
-        }
-
-        private List<string> GetAllNodes()
-        {
-            var nodes = new HashSet<string>();
-            
-            if (_currentData?.Routes != null)
-            {
-                foreach (var route in _currentData.Routes)
-                {
-                    nodes.Add(route.From);
-                    nodes.Add(route.To);
-                }
-            }
-            
-            return nodes.OrderBy(n => n).ToList();
         }
 
         // private (double slowdown, int risk) GetStormCoefficients(string severity)

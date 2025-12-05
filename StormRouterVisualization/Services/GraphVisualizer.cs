@@ -21,13 +21,13 @@ namespace StormRouterVisualization.Services
         
         private Dictionary<string, Point> _nodePositions = new Dictionary<string, Point>();
         private HashSet<string> _routeNodes = new HashSet<string>();
-        private InputData? _currentData;  // Добавляем nullable
-        private RouteState? _optimalRoute; // Добавляем nullable
+        private InputData? _currentData;  
+        private RouteState? _optimalRoute; 
 
         public void Visualize(
             Canvas canvas, 
-            InputData? data,  // Делаем nullable
-            RouteState? optimalRoute, // Делаем nullable
+            InputData? data, 
+            RouteState? optimalRoute, 
             Dictionary<string, Point> nodePositions)
         {
             if (data == null || optimalRoute == null) return;
@@ -90,7 +90,7 @@ namespace StormRouterVisualization.Services
                     Y2 = end.Y,
                     Stroke = strokeBrush,
                     StrokeThickness = strokeThickness,
-                    ToolTip = CreateEdgeTooltip(route, storm), // Исправляем предупреждение
+                    ToolTip = CreateEdgeTooltip(route, storm), 
                     Opacity = edgeOpacity,
                     StrokeDashArray = storm != null ? new DoubleCollection { 2, 2 } : null
                 };
@@ -125,7 +125,7 @@ namespace StormRouterVisualization.Services
                     Stroke = Brushes.White,
                     StrokeThickness = 1.5,
                     ToolTip = CreateNodeTooltip(nodeName),
-                    Cursor = Cursors.Hand // Исправлено - добавили using System.Windows.Input
+                    Cursor = Cursors.Hand 
                 };
 
                 // Добавляем эффект тени
@@ -286,7 +286,7 @@ namespace StormRouterVisualization.Services
             return _currentData?.Storms?.FirstOrDefault(s => s.RouteId == routeId);
         }
 
-        private Brush GetStormColor(string? severity) // Добавляем nullable
+        private Brush GetStormColor(string? severity) 
         {
             if (string.IsNullOrEmpty(severity))
                 return new SolidColorBrush(NormalEdgeColor);
@@ -339,7 +339,7 @@ namespace StormRouterVisualization.Services
             return baseColor;
         }
 
-        private object CreateEdgeTooltip(Route route, Storm? storm) // Добавляем nullable
+        private object CreateEdgeTooltip(Route route, Storm? storm)
         {
             var tooltip = $"Маршрут: {route.From} → {route.To}\n" +
                          $"Расстояние: {route.Distance}\n" +
@@ -372,7 +372,7 @@ namespace StormRouterVisualization.Services
             return tooltip;
         }
 
-        public static (double slowdown, int risk) GetStormCoefficients(string? severity) // Добавляем nullable
+        public static (double slowdown, int risk) GetStormCoefficients(string? severity) 
         {
             if (string.IsNullOrEmpty(severity))
                 return (1.0, 0);
@@ -384,6 +384,167 @@ namespace StormRouterVisualization.Services
                 "high" => (2.0, 60),
                 _ => (1.0, 0)
             };
+        }
+        public Dictionary<string, Point> CalculateNodePositions(InputData data)
+        {
+            var nodes = GetAllNodes(data);
+            if (nodes.Count <= 8)
+                return CalculateStableCircularLayout(nodes, 200);
+            else if (nodes.Count <= 30)
+                return CalculateEnhancedForceDirectedLayout(nodes, data.Routes);
+            else
+                return CalculateHierarchicalLayout(nodes, data.Routes, data.StartPoint);
+        }
+
+        private List<string> GetAllNodes(InputData data)
+        {
+            return data.Routes
+                    .SelectMany(r => new[] { r.From, r.To })
+                    .Distinct()
+                    .OrderBy(n => n)
+                    .ToList();
+        }
+
+        private Dictionary<string, Point> CalculateStableCircularLayout(List<string> nodes, double radius)
+        {
+            var positions = new Dictionary<string, Point>();
+            double centerX = 400;
+            double centerY = 300;
+
+            var sortedNodes = nodes.OrderBy(n => n).ToList();
+            double angleStep = 2 * Math.PI / sortedNodes.Count;
+
+            for (int i = 0; i < sortedNodes.Count; i++)
+            {
+                double angle = i * angleStep;
+                double x = centerX + radius * Math.Cos(angle);
+                double y = centerY + radius * Math.Sin(angle);
+                positions[sortedNodes[i]] = new Point(x, y);
+            }
+
+            return positions;
+        }
+
+        private Dictionary<string, Point> CalculateEnhancedForceDirectedLayout(List<string> nodes, List<Route> routes)
+        {
+            var positions = CalculateStableCircularLayout(nodes, Math.Max(250, nodes.Count * 8));
+            double repulsionForce = 150000 / nodes.Count;
+            double attractionForce = 0.1;
+            double idealLength = 120;
+            int iterations = 150;
+            double damping = 0.9;
+
+            var connections = nodes.ToDictionary(n => n, n => new List<string>());
+            foreach (var route in routes)
+            {
+                if (connections.ContainsKey(route.From) && connections.ContainsKey(route.To))
+                {
+                    connections[route.From].Add(route.To);
+                    if (!connections[route.To].Contains(route.From))
+                        connections[route.To].Add(route.From);
+                }
+            }
+
+            for (int iter = 0; iter < iterations; iter++)
+            {
+                var forces = nodes.ToDictionary(n => n, n => new Vector(0, 0));
+
+                // Отталкивание
+                for (int i = 0; i < nodes.Count; i++)
+                {
+                    for (int j = i + 1; j < nodes.Count; j++)
+                    {
+                        var delta = positions[nodes[i]] - positions[nodes[j]];
+                        double distance = Math.Max(delta.Length, 0.1);
+                        var force = delta / distance * (repulsionForce / (distance * distance));
+                        forces[nodes[i]] += force;
+                        forces[nodes[j]] -= force;
+                    }
+                }
+
+                // Притяжение
+                foreach (var route in routes)
+                {
+                    if (!positions.ContainsKey(route.From) || !positions.ContainsKey(route.To)) continue;
+
+                    var delta = positions[route.To] - positions[route.From];
+                    double distance = Math.Max(delta.Length, 0.1);
+                    var force = delta / distance * (attractionForce * (distance - idealLength));
+                    forces[route.From] += force;
+                    forces[route.To] -= force;
+                }
+
+                foreach (var node in nodes)
+                {
+                    var force = forces[node];
+                    if (force.Length > 8) force = force / force.Length * 8;
+                    positions[node] = new Point(
+                        positions[node].X + force.X * damping,
+                        positions[node].Y + force.Y * damping
+                    );
+
+                    double margin = 80;
+                    positions[node] = new Point(
+                        Math.Max(margin, Math.Min(720, positions[node].X)),
+                        Math.Max(margin, Math.Min(520, positions[node].Y))
+                    );
+                }
+
+                damping *= 0.98;
+            }
+
+            return positions;
+        }
+
+        private Dictionary<string, Point> CalculateHierarchicalLayout(List<string> nodes, List<Route> routes, string? startPoint)
+        {
+            var positions = new Dictionary<string, Point>();
+            var levels = nodes.ToDictionary(n => n, n => -1);
+            var queue = new Queue<string>();
+
+            if (!string.IsNullOrEmpty(startPoint) && nodes.Contains(startPoint))
+            {
+                levels[startPoint] = 0;
+                queue.Enqueue(startPoint);
+            }
+
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+                var neighbors = routes.Where(r => r.From == current).Select(r => r.To)
+                                    .Concat(routes.Where(r => r.To == current).Select(r => r.From))
+                                    .Distinct();
+
+                foreach (var neighbor in neighbors)
+                {
+                    if (levels[neighbor] == -1)
+                    {
+                        levels[neighbor] = levels[current] + 1;
+                        queue.Enqueue(neighbor);
+                    }
+                }
+            }
+
+            var nodesByLevel = nodes.GroupBy(n => Math.Max(0, levels[n]))
+                                    .OrderBy(g => g.Key)
+                                    .ToList();
+
+            double startX = 100;
+            double startY = 100;
+            double levelSpacing = 500.0 / Math.Max(1, nodesByLevel.Count);
+
+            foreach (var levelGroup in nodesByLevel)
+            {
+                var levelNodes = levelGroup.OrderBy(n => n).ToList();
+                double y = startY + levelGroup.Key * levelSpacing;
+                for (int i = 0; i < levelNodes.Count; i++)
+                {
+                    double x = startX + (600.0 / (levelNodes.Count + 1)) * (i + 1);
+                    positions[levelNodes[i]] = new Point(x, y);
+                }
+            }
+
+            return positions;
         }
     }
 }
