@@ -35,15 +35,6 @@ namespace StormRouterVisualization
     
         private RouteReportService _reportService;
 
-
-        // цветовая схема
-        private readonly Color StartNodeColor = Color.FromRgb(56, 142, 60);     // Спокойный зеленый
-        private readonly Color EndNodeColor = Color.FromRgb(211, 47, 47);       // Спокойный красный
-        private readonly Color RouteNodeColor = Color.FromRgb(245, 124, 0);     // Оранжевый
-        private readonly Color NormalNodeColor = Color.FromRgb(66, 133, 244);   // Спокойный синий
-        private readonly Color RouteColor = Color.FromRgb(217, 48, 37);         // Ярко-красный для маршрута
-        private readonly Color NormalEdgeColor = Color.FromRgb(200, 200, 200);  // Светло-серый
-
         public MainWindow()
         {
             InitializeComponent();

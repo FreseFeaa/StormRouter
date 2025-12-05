@@ -12,13 +12,12 @@ namespace StormRouterVisualization.Services
 {
     public class GraphVisualizer
     {
-        // Добавляем using System.Windows.Input для Cursors
-        private readonly Color StartNodeColor = Color.FromRgb(56, 142, 60);
-        private readonly Color EndNodeColor = Color.FromRgb(211, 47, 47);
-        private readonly Color RouteNodeColor = Color.FromRgb(245, 124, 0);
-        private readonly Color NormalNodeColor = Color.FromRgb(66, 133, 244);
-        private readonly Color RouteColor = Color.FromRgb(217, 48, 37);
-        private readonly Color NormalEdgeColor = Color.FromRgb(200, 200, 200);
+        private readonly Color StartNodeColor = Color.FromRgb(56, 142, 60);     // Спокойный зеленый
+        private readonly Color EndNodeColor = Color.FromRgb(211, 47, 47);       // Спокойный красный
+        private readonly Color RouteNodeColor = Color.FromRgb(245, 124, 0);     // Оранжевый
+        private readonly Color NormalNodeColor = Color.FromRgb(66, 133, 244);   // Спокойный синий
+        private readonly Color RouteColor = Color.FromRgb(217, 48, 37);         // Ярко-красный для маршрута
+        private readonly Color NormalEdgeColor = Color.FromRgb(200, 200, 200);  // Светло-серый
         
         private Dictionary<string, Point> _nodePositions = new Dictionary<string, Point>();
         private HashSet<string> _routeNodes = new HashSet<string>();
