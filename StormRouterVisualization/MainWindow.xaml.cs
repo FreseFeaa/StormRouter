@@ -176,7 +176,7 @@ namespace StormRouterVisualization
 
                     InfoTabControl.SelectedIndex = 1;
                 }
-                
+
         private void VisualizeGraph()
         {
             if (_currentData == null || _currentResults == null || _currentResults.Count == 0) 
@@ -217,7 +217,7 @@ namespace StormRouterVisualization
 
             double scaleX = canvasWidth / graphWidth;
             double scaleY = canvasHeight / graphHeight;
-            double scale = Math.Min(scaleX, scaleY) * 0.7; // Уменьшил коэффициент для лучшего fit
+            double scale = Math.Min(scaleX, scaleY) * 0.7; 
 
             scale = Math.Max(0.1, Math.Min(2.0, scale));
 
@@ -230,20 +230,6 @@ namespace StormRouterVisualization
             _scaleTransform.ScaleX = scale;
             _scaleTransform.ScaleY = scale;
         }
-
-        // private (double slowdown, int risk) GetStormCoefficients(string severity)
-        // {
-        //     if (string.IsNullOrEmpty(severity))
-        //         return (1.0, 0);
-
-        //     return severity.ToLower() switch
-        //     {
-        //         "low" => (1.2, 20),
-        //         "medium" => (1.5, 40),
-        //         "high" => (2.0, 60),
-        //         _ => (1.0, 0)
-        //     };
-        // }
 
         private void GraphCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
