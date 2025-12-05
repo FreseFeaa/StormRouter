@@ -32,6 +32,9 @@ namespace StormRouterVisualization
         private HashSet<string> _routeNodes = new HashSet<string>();
         private TimeSpan _computationTime;
         private Random _random = new Random();
+    
+        private RouteReportService _reportService;
+
 
         // цветовая схема
         private readonly Color StartNodeColor = Color.FromRgb(56, 142, 60);     // Спокойный зеленый
@@ -44,14 +47,21 @@ namespace StormRouterVisualization
         public MainWindow()
         {
             InitializeComponent();
-            
+
             _transformGroup.Children.Add(_scaleTransform);
             _transformGroup.Children.Add(_translateTransform);
             GraphCanvas.RenderTransform = _transformGroup;
 
-            // Генерируем случайный граф при первом запуске
+            // Инициализация сервиса перед генерацией графа
+            var styles = new Dictionary<string, Style>();
+            if (TryFindResource("StatTextBlock") is Style statStyle)
+                styles["StatTextBlock"] = statStyle;
+            _reportService = new RouteReportService(styles);
+
+            // Генерируем случайный граф
             GenerateRandomGraph();
         }
+
 
         private void LoadJsonButton_Click(object sender, RoutedEventArgs e)
         {
@@ -145,40 +155,37 @@ namespace StormRouterVisualization
             {
                 MessageBox.Show($"Ошибка при загрузке файла:\n{ex.Message}", "Ошибка загрузки", 
                               MessageBoxButton.OK, MessageBoxImage.Error);
-                // Не сбрасываем текущий граф при ошибке загрузки
             }
         }
 
         private void LoadInputData(InputData inputData, string sourceName)
-        {
-            ResetView();
-            GraphCanvas.Children.Clear();
+                {
+                    ResetView();
+                    GraphCanvas.Children.Clear();
 
-            _currentData = inputData;
+                    _currentData = inputData;
+                    StatusText.Text = $"Загружен: {sourceName}";
 
-            StatusText.Text = $"Загружен: {sourceName}";
+                    var router = new StormRouter();
+                    router.LoadData(_currentData);
 
-            var router = new StormRouter();
-            router.LoadData(_currentData);
+                    var stopwatch = Stopwatch.StartNew();
+                    _currentResults = router.CalculateOptimalRoutes(
+                        _currentData.StartPoint,
+                        _currentData.EndPoint,
+                        _currentData.DepartureTime
+                    );
+                    stopwatch.Stop();
+                    _computationTime = stopwatch.Elapsed;
 
-            // Измеряем время вычисления
-            var stopwatch = Stopwatch.StartNew();
-            _currentResults = router.CalculateOptimalRoutes(
-                _currentData.StartPoint,
-                _currentData.EndPoint,
-                _currentData.DepartureTime
-            );
-            stopwatch.Stop();
-            _computationTime = stopwatch.Elapsed;
+                    VisualizeGraph();
 
-            VisualizeGraph();
-            UpdateRouteDetails();
-            UpdateStatistics();
-            UpdateRawData(JsonSerializer.Serialize(_currentData, new JsonSerializerOptions { WriteIndented = true }));
+                    RouteDetailsText.Text = _reportService.GenerateRouteDetails(_currentData, _currentResults);
+                    _reportService.PopulateStatisticsPanel(StatsPanel, _currentData, _currentResults, _nodePositions, _computationTime);
+                    RawDataText.Text = _reportService.FormatRawData(JsonSerializer.Serialize(_currentData, new JsonSerializerOptions { WriteIndented = true }));
 
-            InfoTabControl.SelectedIndex = 1;
-        }
-
+                    InfoTabControl.SelectedIndex = 1;
+                }
         private void VisualizeGraph()
         {
             if (_currentData == null || _currentResults == null || _currentResults.Count == 0) 
@@ -477,179 +484,6 @@ namespace StormRouterVisualization
         //         _ => (1.0, 0)
         //     };
         // }
-
-        private void UpdateRouteDetails()
-        {
-            if (_currentResults == null || _currentResults.Count == 0)
-            {
-                RouteDetailsText.Text = "❌ Маршруты не найдены";
-                return;
-            }
-
-            var sb = new System.Text.StringBuilder();
-            
-            for (int i = 0; i < _currentResults.Count; i++)
-            {
-                var result = _currentResults[i];
-                sb.AppendLine($"═══════════════════════════════════════════════════");
-                sb.AppendLine($"🚢 МАРШРУТ #{i + 1}");
-                sb.AppendLine($"═══════════════════════════════════════════════════");
-                sb.AppendLine($"📊 Общая информация:");
-                sb.AppendLine($"  • Путь: {string.Join(" → ", result.Path)}");
-                sb.AppendLine($"  • Время отправления: {_currentData?.DepartureTime:dd.MM.yyyy HH:mm}");
-                sb.AppendLine($"  • Время прибытия: {result.CurrentTime:dd.MM.yyyy HH:mm}");
-                sb.AppendLine($"  • Общее время в пути: {result.TotalTime:F1} часов");
-                sb.AppendLine($"  • Чистое время движения: {result.TotalTravelTime:F1} часов");
-                sb.AppendLine($"  • Время ожидания: {result.TotalWaitTime:F1} часов");
-                sb.AppendLine($"  • Общий риск: {result.TotalRisk:F1}");
-                sb.AppendLine();
-                
-                sb.AppendLine($"🔄 Детализация маршрута:");
-                sb.AppendLine($"---------------------------------------------------");
-                
-                for (int j = 0; j < result.Segments.Count; j++)
-                {
-                    var segment = result.Segments[j];
-                    
-                    if (segment.Type == "Wait")
-                    {
-                        sb.AppendLine($"⏳ Шаг {j + 1}: ОЖИДАНИЕ в узле {segment.FromNode}");
-                        sb.AppendLine($"     📅 Время: {segment.StartTime:dd.MM HH:mm} → {segment.EndTime:dd.MM HH:mm}");
-                        sb.AppendLine($"     ⏱️  Продолжительность: {segment.Duration:F1} часов");
-                        sb.AppendLine($"     📋 Причина: ожидание окончания шторма");
-                    }
-                    else if (segment.Type == "Travel")
-                    {
-                        sb.AppendLine($"🚢 Шаг {j + 1}: ДВИЖЕНИЕ {segment.FromNode} → {segment.ToNode}");
-                        sb.AppendLine($"     📅 Время: {segment.StartTime:dd.MM HH:mm} → {segment.EndTime:dd.MM HH:mm}");
-                        sb.AppendLine($"     ⏱️  Базовая продолжительность: {segment.BaseTime:F1} часов");
-                        sb.AppendLine($"     ⏱️  Фактическая продолжительность: {segment.ActualTime:F1} часов");
-                        
-                        if (!string.IsNullOrEmpty(segment.StormSeverity))
-                        {
-                            var coefficients = GraphVisualizer.GetStormCoefficients(segment.StormSeverity);
-                            sb.AppendLine($"     ⚡ ШТОРМ: уровень {segment.StormSeverity}");
-                            sb.AppendLine($"     📈 Коэффициент замедления: {coefficients.slowdown:F1}x");
-                            sb.AppendLine($"     🎯 Добавочный риск: {coefficients.risk}");
-                        }
-                        else
-                        {
-                            sb.AppendLine($"     ✅ Без шторма");
-                            sb.AppendLine($"     🎯 Добавочный риск: 0");
-                        }
-                    }
-                    sb.AppendLine();
-                }
-                sb.AppendLine();
-            }
-
-            RouteDetailsText.Text = sb.ToString();
-        }
-
-        private void UpdateStatistics()
-        {
-            StatsPanel.Children.Clear();
-
-            if (_currentResults == null || _currentResults.Count == 0) return;
-
-            var bestRoute = _currentResults[0];
-
-            // Основная статистика
-            AddStatistic("Лучший маршрут", "");
-            
-            // Используем TextBox для полного отображения длинного маршрута
-            var pathTextBox = new TextBox
-            {
-                Text = string.Join(" → ", bestRoute.Path),
-                FontFamily = new FontFamily("Consolas"),
-                FontSize = 11,
-                Background = Brushes.Transparent,
-                BorderThickness = new Thickness(0),
-                IsReadOnly = true,
-                TextWrapping = TextWrapping.Wrap,
-                MaxHeight = 80,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                Margin = new Thickness(0, 0, 0, 10)
-            };
-
-            StatsPanel.Children.Add(pathTextBox);
-
-            AddStatistic("Время отправления", $"{_currentData?.DepartureTime:dd.MM.yyyy HH:mm}");
-            AddStatistic("Время прибытия", $"{bestRoute.CurrentTime:dd.MM.yyyy HH:mm}");
-            AddStatistic("Общее время в пути", $"{bestRoute.TotalTime:F1} часов");
-            AddStatistic("Время движения", $"{bestRoute.TotalTravelTime:F1} часов");
-            AddStatistic("Время ожидания", $"{bestRoute.TotalWaitTime:F1} часов");
-            AddStatistic("Общий риск", $"{bestRoute.TotalRisk:F1}");
-
-            // Время вычисления
-            AddStatistic("Время вычисления", $"{_computationTime.TotalMilliseconds:F2} мс");
-
-            // Статистика по штормам
-            var stormSegments = bestRoute.Segments.Where(s => !string.IsNullOrEmpty(s.StormSeverity)).ToList();
-            AddStatistic("Участков со штормом", stormSegments.Count.ToString());
-            
-            foreach (var stormSegment in stormSegments)
-            {
-                var coefficients = GraphVisualizer.GetStormCoefficients(stormSegment.StormSeverity);
-                AddStatistic($"  - {stormSegment.FromNode}→{stormSegment.ToNode}", 
-                           $"{stormSegment.StormSeverity} (риск +{coefficients.risk})");
-            }
-
-            // Статистика по ожиданию
-            var waitSegments = bestRoute.Segments.Where(s => s.Type == "Wait").ToList();
-            AddStatistic("Остановок для ожидания", waitSegments.Count.ToString());
-            
-            foreach (var waitSegment in waitSegments)
-            {
-                AddStatistic($"  - В узле {waitSegment.FromNode}", 
-                           $"{waitSegment.Duration:F1} часов");
-            }
-
-            // Информация о графе
-            AddStatistic("Всего узлов в графе", _nodePositions.Count.ToString());
-            AddStatistic("Всего рёбер в графе", _currentData?.Routes?.Count.ToString() ?? "0");
-            AddStatistic("Найдено маршрутов", _currentResults.Count.ToString());
-        }
-
-        private void AddStatistic(string name, string value)
-        {
-            var stackPanel = new StackPanel { 
-                Orientation = Orientation.Horizontal, 
-                Margin = new Thickness(0, 4, 0, 4) 
-            };
-            
-            var nameText = new TextBlock { 
-                Text = name + ":", 
-                FontWeight = FontWeights.Bold, 
-                Width = 180,
-                Style = (Style)FindResource("StatTextBlock")
-            };
-            
-            var valueText = new TextBlock { 
-                Text = value,
-                Style = (Style)FindResource("StatTextBlock")
-            };
-            
-            stackPanel.Children.Add(nameText);
-            stackPanel.Children.Add(valueText);
-            StatsPanel.Children.Add(stackPanel);
-        }
-
-        private void UpdateRawData(string jsonString)
-        {
-            try
-            {
-                var formattedJson = JsonSerializer.Serialize(
-                    JsonSerializer.Deserialize<JsonElement>(jsonString), 
-                    new JsonSerializerOptions { WriteIndented = true });
-                RawDataText.Text = formattedJson;
-            }
-            catch
-            {
-                RawDataText.Text = jsonString;
-            }
-        }
 
         private void GraphCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
