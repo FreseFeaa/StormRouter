@@ -9,7 +9,7 @@ class Program
 {
     static void Main()
     {
-        string jsonPath = "../StormRouterVisualization/Data/route_data.json"; 
+        string jsonPath = "../Data/route_data.json"; 
 
         if (!File.Exists(jsonPath))
         {
