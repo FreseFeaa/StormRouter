@@ -3,12 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using StormBase.Models;
 using StormBase.Services;
+using StormBase.Services.Routing;
+using StormBase.Services.Storms;
 
 namespace StormRouterVisualization.Services
 {
     public class RandomGraphGenerator
     {
         private readonly Random _random = new Random();
+
+        private readonly IRouteGraph _routeGraph;
+        private readonly IStormProvider _stormProvider;
+
+        public RandomGraphGenerator(IRouteGraph routeGraph, IStormProvider stormProvider)
+        {
+            _routeGraph = routeGraph ?? throw new ArgumentNullException(nameof(routeGraph));
+            _stormProvider = stormProvider ?? throw new ArgumentNullException(nameof(stormProvider));
+        }
 
         public InputData? Generate(int minNodes = 10, int maxNodes = 30)
         {
@@ -102,10 +113,15 @@ namespace StormRouterVisualization.Services
                 Storms = storms
             };
 
-            // Проверка, что маршрут существует
-            var testRouter = new StormRouter();
-            testRouter.LoadData(inputData);
-            var results = testRouter.CalculateOptimalRoutes(startPoint, endPoint, DateTime.Now, 1);
+            var router = new StormRouter(_routeGraph, _stormProvider);
+            router.LoadData(inputData);
+
+            var results = router.CalculateOptimalRoutes(
+                startPoint,
+                endPoint,
+                DateTime.Now,
+                1
+            );
 
             return results.Count > 0 ? inputData : null;
         }

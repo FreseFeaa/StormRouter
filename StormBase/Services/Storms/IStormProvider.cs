@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using StormBase.Models;
+
 public interface IStormProvider
 {
     Storm? GetActiveStorm(string routeId, DateTime time);

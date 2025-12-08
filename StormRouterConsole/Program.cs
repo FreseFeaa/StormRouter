@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text.Json;
 using StormBase.Models;
 using StormBase.Services;
+using StormBase.Services.Routing;
+using StormBase.Services.Storms;
 
 class Program
 {
     static void Main()
     {
-        string jsonPath = "../Data/route_data.json"; 
+        string jsonPath = "../Data/route_data.json";
 
         if (!File.Exists(jsonPath))
         {
@@ -29,10 +31,18 @@ class Program
             return;
         }
 
-        var router = new StormRouter();
+        var routeGraph = new RouteGraph();
+        var stormProvider = new StormProvider();
+
+        var router = new StormRouter(routeGraph, stormProvider);
+
         router.LoadData(data);
 
-        var results = router.CalculateOptimalRoutes(data.StartPoint, data.EndPoint, data.DepartureTime);
+        var results = router.CalculateOptimalRoutes(
+            data.StartPoint,
+            data.EndPoint,
+            data.DepartureTime
+        );
 
         Console.WriteLine("=== РЕЗУЛЬТАТЫ РАСЧЕТА МАРШРУТОВ ===");
         Console.WriteLine($"Отправление: {data.DepartureTime}");
@@ -49,7 +59,7 @@ class Program
         {
             var route = results[i];
             Console.WriteLine($"═══════════════════════════════════════════");
-            Console.WriteLine($"МАРШРУТ #{i+1}");
+            Console.WriteLine($"МАРШРУТ #{i + 1}");
             Console.WriteLine($"═══════════════════════════════════════════");
             Console.WriteLine($"Путь: {string.Join(" → ", route.Path)}");
             Console.WriteLine($"Время прибытия: {route.CurrentTime}");
@@ -65,7 +75,7 @@ class Program
                 Console.WriteLine($"  Время: {seg.StartTime} → {seg.EndTime}");
                 if (seg.Type == "Wait")
                 {
-                    Console.WriteLine($"  🕒 ОЖИДАНИЕ: {seg.Duration:F1} ч (ожидание окончания шторма)");
+                    Console.WriteLine($"  🕒 ОЖИДАНИЕ: {seg.Duration:F1} ч");
                 }
                 else
                 {
@@ -73,7 +83,7 @@ class Program
                     if (seg.StormSeverity != null)
                         Console.WriteLine($"     ⚠️  Шторм: {seg.StormSeverity}, замедление {seg.SlowdownCoefficient:F1}x, риск {seg.Risk:F1}");
                     else
-                        Console.WriteLine($"     ✅ Без шторма, риск 0");
+                        Console.WriteLine($"     ✅ Без шторма");
                 }
                 Console.WriteLine();
             }
@@ -85,7 +95,7 @@ class Program
             Console.WriteLine($"  Всего шагов: {route.Segments.Count}");
             Console.WriteLine($"  Участков со штормом: {stormSegments.Count}");
             foreach (var seg in stormSegments)
-                Console.WriteLine($"    - {seg.FromNode} → {seg.ToNode}: {seg.StormSeverity} (+{seg.Risk:F1} риска, замедление {seg.SlowdownCoefficient:F1}x)");
+                Console.WriteLine($"    - {seg.FromNode} → {seg.ToNode}: {seg.StormSeverity} (+{seg.Risk:F1}, {seg.SlowdownCoefficient:F1}x)");
 
             Console.WriteLine($"  Остановок для ожидания: {waitSegments.Count}");
             foreach (var seg in waitSegments)
