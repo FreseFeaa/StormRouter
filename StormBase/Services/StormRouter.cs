@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using StormRouterVisualization.Models;
+using StormBase.Models;
 
-namespace StormRouterVisualization.Services
+namespace StormBase.Services
 {
     public class StormRouter
     {

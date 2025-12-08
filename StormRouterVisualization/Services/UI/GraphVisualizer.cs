@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using StormRouterVisualization.Models;
+using StormBase.Models;
 
 namespace StormRouterVisualization.Services
 {

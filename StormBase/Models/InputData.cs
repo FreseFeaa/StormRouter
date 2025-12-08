@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace StormRouterVisualization.Models
+namespace StormBase.Models
 {
     public class InputData
     {
