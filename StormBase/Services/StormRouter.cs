@@ -3,29 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using StormBase.Models;
 using StormBase.Services.Routing;
+using StormBase.Services.Storms;
 
 namespace StormBase.Services
 {
     public class StormRouter
     {
         private readonly IRouteGraph _routeGraph;
-        private Dictionary<string, List<Storm>> _stormsByRoute = new Dictionary<string, List<Storm>>();
-        private Dictionary<string, (double slowdown, int risk)> _stormCoefficients = new Dictionary<string, (double, int)>();
+        private readonly IStormProvider _stormProvider;
 
-        public StormRouter(IRouteGraph routeGraph)
+        public StormRouter(IRouteGraph routeGraph, IStormProvider stormProvider)
         {
             _routeGraph = routeGraph ?? throw new ArgumentNullException(nameof(routeGraph));
-            InitializeStormCoefficients();
-        }
-
-        private void InitializeStormCoefficients()
-        {
-            _stormCoefficients = new Dictionary<string, (double, int)>
-            {
-                ["low"] = (1.2, 1),
-                ["medium"] = (1.5, 2),
-                ["high"] = (2.0, 3)
-            };
+            _stormProvider = stormProvider ?? throw new ArgumentNullException(nameof(stormProvider));
         }
 
         public void LoadData(InputData data)
@@ -33,18 +23,7 @@ namespace StormBase.Services
             if (data == null) throw new ArgumentNullException(nameof(data));
 
             _routeGraph.BuildGraph(data.Routes);
-            BuildStormIndex(data.Storms);
-        }
-
-        private void BuildStormIndex(List<Storm> storms)
-        {
-            _stormsByRoute = new Dictionary<string, List<Storm>>();
-            foreach (var storm in storms)
-            {
-                if (!_stormsByRoute.ContainsKey(storm.RouteId))
-                    _stormsByRoute[storm.RouteId] = new List<Storm>();
-                _stormsByRoute[storm.RouteId].Add(storm);
-            }
+            _stormProvider.LoadStorms(data.Storms);
         }
 
         public List<RouteState> CalculateOptimalRoutes(string startPoint, string endPoint, DateTime departureTime, int maxAlternatives = 3)
@@ -117,7 +96,7 @@ namespace StormBase.Services
             double slowdownCoefficient = 1.0;
             string? stormSeverity = null;
 
-            var activeStorm = GetActiveStorm(routeId, startTime);
+            var activeStorm = _stormProvider.GetActiveStorm(routeId, startTime);
             RouteSegment? waitSegment = null;
 
             if (activeStorm != null)
@@ -142,10 +121,10 @@ namespace StormBase.Services
                     };
                     startTime = waitUntil;
 
-                    var stormAfterWait = GetActiveStorm(routeId, waitUntil);
+                    var stormAfterWait = _stormProvider.GetActiveStorm(routeId, waitUntil);
                     if (stormAfterWait != null)
                     {
-                        var coeff = _stormCoefficients[stormAfterWait.Severity];
+                        var coeff = _stormProvider.GetStormCoefficients(stormAfterWait.Severity);
                         travelTime = route.BaseTime * coeff.slowdown;
                         riskAddition = route.BaseTime * coeff.risk;
                         slowdownCoefficient = coeff.slowdown;
@@ -154,7 +133,7 @@ namespace StormBase.Services
                 }
                 else
                 {
-                    var coeff = _stormCoefficients[activeStorm.Severity];
+                    var coeff = _stormProvider.GetStormCoefficients(activeStorm.Severity);
                     travelTime = route.BaseTime * coeff.slowdown;
                     riskAddition = route.BaseTime * coeff.risk;
                     slowdownCoefficient = coeff.slowdown;
@@ -198,13 +177,6 @@ namespace StormBase.Services
             newState.Segments.Add(travelSegment);
 
             return newState;
-        }
-
-        private Storm? GetActiveStorm(string routeId, DateTime time)
-        {
-            if (_stormsByRoute.ContainsKey(routeId))
-                return _stormsByRoute[routeId].FirstOrDefault(s => time >= s.StartTime && time < s.EndTime);
-            return null;
         }
 
         private bool IsStateWorseThanExisting(Dictionary<string, List<RouteState>> visited, RouteState newState)
