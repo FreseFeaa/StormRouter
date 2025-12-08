@@ -9,7 +9,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
-using StormRouterVisualization.Models;
+using StormBase.Models;
+using StormBase.Services;
+using StormBase.Services.Routing;
+using StormBase.Services.Storms;
 using StormRouterVisualization.Services;
 
 namespace StormRouterVisualization
@@ -73,7 +76,10 @@ namespace StormRouterVisualization
         {
             try
             {
-                var generator = new RandomGraphGenerator();
+                var generator = new RandomGraphGenerator(
+                    new RouteGraph(),
+                    new StormProvider()
+                );
                 var randomData = generator.Generate();
 
                 if (randomData != null)
@@ -126,7 +132,9 @@ namespace StormRouterVisualization
             _currentData = inputData;
             StatusText.Text = $"Загружен: {source}";
 
-            var router = new StormRouter();
+            var routeGraph = new RouteGraph();
+            var stormProvider = new StormProvider();
+            var router = new StormRouter(routeGraph, stormProvider);            
             router.LoadData(_currentData);
 
             var sw = Stopwatch.StartNew();

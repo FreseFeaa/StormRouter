@@ -1,59 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using StormRouterVisualization.Models;
+using StormBase.Models;
+using StormBase.Services.Routing;
+using StormBase.Services.Storms;
 
-namespace StormRouterVisualization.Services
+namespace StormBase.Services
 {
     public class StormRouter
     {
-        private Dictionary<string, List<Route>> _graph = new Dictionary<string, List<Route>>();
-        private Dictionary<string, List<Storm>> _stormsByRoute = new Dictionary<string, List<Storm>>();
-        private Dictionary<string, (double slowdown, int risk)> _stormCoefficients = new Dictionary<string, (double, int)>();
+        private readonly IRouteGraph _routeGraph;
+        private readonly IStormProvider _stormProvider;
 
-        public StormRouter()
+        public StormRouter(IRouteGraph routeGraph, IStormProvider stormProvider)
         {
-            InitializeStormCoefficients();
-        }
-
-        private void InitializeStormCoefficients()
-        {
-       _stormCoefficients = new Dictionary<string, (double, int)>
-            {
-                ["low"] = (1.2, 1),    
-                ["medium"] = (1.5, 2), 
-                ["high"] = (2.0, 3)    
-            };
+            _routeGraph = routeGraph ?? throw new ArgumentNullException(nameof(routeGraph));
+            _stormProvider = stormProvider ?? throw new ArgumentNullException(nameof(stormProvider));
         }
 
         public void LoadData(InputData data)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
-            
-            BuildGraph(data.Routes);
-            BuildStormIndex(data.Storms);
-        }
 
-        private void BuildGraph(List<Route> routes)
-        {
-            _graph = new Dictionary<string, List<Route>>();
-            foreach (var route in routes)
-            {
-                if (!_graph.ContainsKey(route.From))
-                    _graph[route.From] = new List<Route>();
-                _graph[route.From].Add(route);
-            }
-        }
-
-        private void BuildStormIndex(List<Storm> storms)
-        {
-            _stormsByRoute = new Dictionary<string, List<Storm>>();
-            foreach (var storm in storms)
-            {
-                if (!_stormsByRoute.ContainsKey(storm.RouteId))
-                    _stormsByRoute[storm.RouteId] = new List<Storm>();
-                _stormsByRoute[storm.RouteId].Add(storm);
-            }
+            _routeGraph.BuildGraph(data.Routes);
+            _stormProvider.LoadStorms(data.Storms);
         }
 
         public List<RouteState> CalculateOptimalRoutes(string startPoint, string endPoint, DateTime departureTime, int maxAlternatives = 3)
@@ -86,17 +56,14 @@ namespace StormRouterVisualization.Services
                     continue;
                 }
 
-                var nextSteps = GetNextSteps(currentState);
-                
-                foreach (var nextStep in nextSteps)
+                foreach (var nextState in GetNextSteps(currentState))
                 {
-                    if (nextStep == null) continue;
-                    
-                    if (!IsStateWorseThanExisting(visited, nextStep))
+                    if (nextState == null) continue;
+
+                    if (!IsStateWorseThanExisting(visited, nextState))
                     {
-                        AddToVisited(visited, nextStep);
-                        double priority = nextStep.TotalTime; 
-                        queue.Enqueue(nextStep, priority);
+                        AddToVisited(visited, nextState);
+                        queue.Enqueue(nextState, nextState.TotalTime);
                     }
                 }
             }
@@ -108,18 +75,13 @@ namespace StormRouterVisualization.Services
         {
             var nextSteps = new List<RouteState?>();
 
-            if (!_graph.ContainsKey(currentState.Node))
-                return nextSteps;
-
-            foreach (var route in _graph[currentState.Node])
+            foreach (var route in _routeGraph.GetRoutesFrom(currentState.Node))
             {
                 var immediateState = CalculateRouteStep(currentState, route, wait: false);
-                if (immediateState != null)
-                    nextSteps.Add(immediateState);
+                if (immediateState != null) nextSteps.Add(immediateState);
 
                 var waitState = CalculateRouteStep(currentState, route, wait: true);
-                if (waitState != null)
-                    nextSteps.Add(waitState);
+                if (waitState != null) nextSteps.Add(waitState);
             }
 
             return nextSteps;
@@ -134,20 +96,17 @@ namespace StormRouterVisualization.Services
             double slowdownCoefficient = 1.0;
             string? stormSeverity = null;
 
-            var activeStorm = GetActiveStorm(routeId, startTime);
-            
+            var activeStorm = _stormProvider.GetActiveStorm(routeId, startTime);
             RouteSegment? waitSegment = null;
-            
+
             if (activeStorm != null)
             {
                 if (wait)
                 {
                     DateTime waitUntil = activeStorm.EndTime;
-                    if (waitUntil <= startTime)
-                        return null;
+                    if (waitUntil <= startTime) return null;
 
                     double waitHours = (waitUntil - startTime).TotalHours;
-                    
                     waitSegment = new RouteSegment
                     {
                         Type = "Wait",
@@ -160,31 +119,24 @@ namespace StormRouterVisualization.Services
                         BaseTime = waitHours,
                         ActualTime = waitHours
                     };
-                    
                     startTime = waitUntil;
-                    
-                    var stormAfterWait = GetActiveStorm(routeId, waitUntil);
-                    if (stormAfterWait == null)
+
+                    var stormAfterWait = _stormProvider.GetActiveStorm(routeId, waitUntil);
+                    if (stormAfterWait != null)
                     {
-                        travelTime = route.BaseTime;
-                        riskAddition = 0;
-                        slowdownCoefficient = 1.0;
-                    }
-                    else
-                    {
-                        var coefficients = _stormCoefficients[stormAfterWait.Severity];
-                        travelTime = route.BaseTime * coefficients.slowdown;
-                        riskAddition = route.BaseTime * coefficients.risk;
-                        slowdownCoefficient = coefficients.slowdown;
+                        var coeff = _stormProvider.GetStormCoefficients(stormAfterWait.Severity);
+                        travelTime = route.BaseTime * coeff.slowdown;
+                        riskAddition = route.BaseTime * coeff.risk;
+                        slowdownCoefficient = coeff.slowdown;
                         stormSeverity = stormAfterWait.Severity;
                     }
                 }
                 else
                 {
-                    var coefficients = _stormCoefficients[activeStorm.Severity];
-                    travelTime = route.BaseTime * coefficients.slowdown;
-                    riskAddition = route.BaseTime * coefficients.risk;
-                    slowdownCoefficient = coefficients.slowdown;
+                    var coeff = _stormProvider.GetStormCoefficients(activeStorm.Severity);
+                    travelTime = route.BaseTime * coeff.slowdown;
+                    riskAddition = route.BaseTime * coeff.risk;
+                    slowdownCoefficient = coeff.slowdown;
                     stormSeverity = activeStorm.Severity;
                 }
             }
@@ -194,7 +146,6 @@ namespace StormRouterVisualization.Services
             }
 
             DateTime arrivalTime = startTime.AddHours(travelTime);
-            
             var travelSegment = new RouteSegment
             {
                 Type = "Travel",
@@ -222,41 +173,24 @@ namespace StormRouterVisualization.Services
                 Segments = new List<RouteSegment>(currentState.Segments)
             };
 
-            if (waitSegment != null)
-            {
-                newState.Segments.Add(waitSegment);
-            }
+            if (waitSegment != null) newState.Segments.Add(waitSegment);
             newState.Segments.Add(travelSegment);
 
             return newState;
         }
 
-        private Storm? GetActiveStorm(string routeId, DateTime time)
-        {
-            if (_stormsByRoute.ContainsKey(routeId))
-            {
-                return _stormsByRoute[routeId]
-                    .FirstOrDefault(storm => time >= storm.StartTime && time < storm.EndTime);
-            }
-            return null;
-        }
-
         private bool IsStateWorseThanExisting(Dictionary<string, List<RouteState>> visited, RouteState newState)
         {
-            if (!visited.ContainsKey(newState.Node))
-                return false;
+            if (!visited.ContainsKey(newState.Node)) return false;
 
-            var existingStates = visited[newState.Node];
-            return existingStates.Any(existing =>
-                existing.CurrentTime <= newState.CurrentTime && 
+            return visited[newState.Node].Any(existing =>
+                existing.CurrentTime <= newState.CurrentTime &&
                 existing.TotalRisk <= newState.TotalRisk);
         }
 
         private void AddToVisited(Dictionary<string, List<RouteState>> visited, RouteState state)
         {
-            if (!visited.ContainsKey(state.Node))
-                visited[state.Node] = new List<RouteState>();
-            
+            if (!visited.ContainsKey(state.Node)) visited[state.Node] = new List<RouteState>();
             visited[state.Node].Add(state);
         }
     }
