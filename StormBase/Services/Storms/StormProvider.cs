@@ -14,7 +14,7 @@ namespace StormBase.Services.Storms
         {
             _stormCoefficients = new Dictionary<string, (double, int)>
             {
-                ["low"] = (1.2, 1),
+                ["low"] = (1.1, 1),
                 ["medium"] = (1.5, 2),
                 ["high"] = (2.0, 3)
             };

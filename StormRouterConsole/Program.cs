@@ -11,7 +11,7 @@ class Program
 {
     static void Main()
     {
-        string jsonPath = "../Data/route_data.json";
+        string jsonPath = "../StormBase.Tests/Data/route_data.json";
 
         if (!File.Exists(jsonPath))
         {
