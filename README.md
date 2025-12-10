@@ -42,10 +42,10 @@
 ## Cтруктура проекта
 ```
 ├─ StormBase/                 <- Общая библиотека (классы и логика)
-│  ├─ Models/                 <- Классы данных: InputData, Route, Storm, RouteSegment, RouteState
-│  └─ Services/               <- Класс StormRouter с алгоритмом маршрутизации
+│  ├─ Models/                
+│  └─ Services/               
 ├─ StormBase.Tests/               <- Проект с тестами xUnit
-│  ├─ Data/                       <- JSON-файлы для тестов
+│  ├─ Data/                       
 │  ├─ DataTests.cs
 │  ├─ IntegrationTests.cs
 │  ├─ RouteGraphTests.cs
@@ -53,14 +53,13 @@
 │  ├─ StormRouterTests.cs
 │  └─ StormBase.Tests.csproj
 ├─ StormRouterVisualization/  <- WPF UI проект
-│  ├─ Data/                   <- Примеры данных / JSON
-│  ├─ Services/               <- Сервисный код, если нужен только для UI
-│  ├─ Utilities/              <- Вспомогательные классы
-│  ├─ App.xaml                <- WPF приложение
-│  ├─ MainWindow.xaml         <- Главное окно
+│  ├─ Services/             
+│  ├─ Utilities/            
+│  ├─ App.xaml               
+│  ├─ MainWindow.xaml         
 │  └─ StormRouterVisualization.csproj
-├─ StormRouterConsole/        <- Консольное приложение для тестирования и вывода маршрутов
-│  └─ Program.cs              <- Консольный запуск, красивый вывод маршрутов
+├─ StormRouterConsole/      
+│  └─ Program.cs             
 ├─ StormRouter.sln
 ```
 > Console версия в основном служит для сценария на 100 узлов, т.к визуалиция выглядит перегруженной подобной вещью.
